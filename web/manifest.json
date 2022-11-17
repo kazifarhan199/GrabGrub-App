@@ -1,6 +1,6 @@
 {
-    "name": "grabgrub_app",
-    "short_name": "grabgrub_app",
+    "name": "grab_grub_app",
+    "short_name": "grab_grub_app",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
