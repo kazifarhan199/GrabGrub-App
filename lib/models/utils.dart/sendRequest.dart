@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:grab_grub_app/models/userModel.dart';
-import 'package:grab_grub_app/models/utils.dart/staticVar.dart';
+import 'package:grab_grub_app/staticVar.dart';
 import 'package:http/http.dart';
 
 import 'isConnected.dart';

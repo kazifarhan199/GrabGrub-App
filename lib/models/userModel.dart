@@ -24,8 +24,6 @@ class UserModel {
     required String username,
     required String password,
   }) async {
-    print(username);
-    print(password);
     Iterable<MultipartFile> files = [];
     Map<String, String> body = {};
     String url = '/accounts/login/';
@@ -45,6 +43,36 @@ class UserModel {
     );
 
     data['username'] = username;
+    UserModel user = UserModel.fromJson(data);
+    return user;
+  }
+
+  static Future<UserModel> register({
+    required String username,
+    required String email,
+    required String password,
+  }) async {
+    Iterable<MultipartFile> files = [];
+    Map<String, String> body = {};
+    String url = '/accounts/register/';
+    Map<String, dynamic> data = {};
+    int expectedStatusCode = 201;
+
+    body['username'] = username;
+    body['email'] = email;
+    body['password'] = password;
+
+    data = await sendRequest(
+      url: url,
+      files: files,
+      body: body,
+      expectedStatusCode: expectedStatusCode,
+      needHeader: false,
+      Method: "POST",
+    );
+
+    data['username'] = username;
+    data['email'] = email;
     UserModel user = UserModel.fromJson(data);
     return user;
   }

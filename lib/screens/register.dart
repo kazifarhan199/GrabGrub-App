@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:grab_grub_app/models/userModel.dart';
+import 'package:grab_grub_app/routing.dart';
 
-import '../routing.dart';
 import 'home.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class Register extends StatefulWidget {
+  const Register({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _LoginState extends State<Login> {
-  String username = '', password = '';
+class _RegisterState extends State<Register> {
+  String username = '', email = '', password = '';
 
   Future<void> _showMyDialog(String error) async {
     return showDialog<void>(
@@ -42,9 +42,13 @@ class _LoginState extends State<Login> {
   }
 
   void loginMethod() async {
+    Routing.loginPage(context);
+  }
+
+  void registerMethod() async {
     try {
-      UserModel user =
-          await UserModel.login(username: username, password: password);
+      UserModel user = await UserModel.register(
+          username: username, email: email, password: password);
       if (user.username != '') {
         Routing.homePage(context);
       }
@@ -52,10 +56,6 @@ class _LoginState extends State<Login> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
     }
-  }
-
-  void registerMethod() async {
-    Routing.registerPage(context);
   }
 
   @override
@@ -100,6 +100,16 @@ class _LoginState extends State<Login> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       child: TextFormField(
+                        onChanged: (val) => email = val,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'Email',
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      child: TextFormField(
                         obscureText: true,
                         onChanged: (val) => password = val,
                         decoration: InputDecoration(
@@ -111,18 +121,17 @@ class _LoginState extends State<Login> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
-                        child: Text("Login"),
-                        onPressed: loginMethod,
+                        child: Text("Register"),
+                        onPressed: registerMethod,
                       ),
                     ),
                     Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Not a memeber yet ?"),
+                          Text("Already a member ?"),
                           TextButton(
-                              onPressed: registerMethod,
-                              child: Text("Register"))
+                              onPressed: loginMethod, child: Text("Login"))
                         ],
                       ),
                     ),
@@ -130,7 +139,7 @@ class _LoginState extends State<Login> {
                 ),
               ),
             ),
-          ),
+          )
         ],
       )),
     );
