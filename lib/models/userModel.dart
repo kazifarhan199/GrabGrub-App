@@ -33,10 +33,14 @@ class UserModel {
   }
 
   static saveToHive(UserModel user) {
-    var box = Hive.box('userBox');
-    box.put('id', user.id);
-    box.put('username', user.username);
-    box.put('token', user.token);
+    if (user.token == '') {
+      print("Token is empty");
+    } else {
+      var box = Hive.box('userBox');
+      box.put('id', user.id);
+      box.put('username', user.username);
+      box.put('token', user.token);
+    }
   }
 
   static Future<UserModel> login({
