@@ -3,6 +3,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:hive/hive.dart';
 
+import '../models/userModel.dart';
 import 'home.dart';
 import 'login.dart';
 
@@ -18,7 +19,7 @@ class _WrapperState extends State<Wrapper> {
   bool loding = true;
 
   init() async {
-    box = await Hive.openBox('UserBox');
+    box = await Hive.openBox('userBox');
     setState(() {
       loding = false;
     });
