@@ -6,6 +6,7 @@ import 'package:hive/hive.dart';
 import '../models/userModel.dart';
 import 'home.dart';
 import 'login.dart';
+import 'navigationBar.dart';
 
 class Wrapper extends StatefulWidget {
   const Wrapper({super.key});
@@ -36,7 +37,9 @@ class _WrapperState extends State<Wrapper> {
     if (loding == true) {
       return CircularProgressIndicator();
     } else {
-      return (box.get('id') == null || box.get('id') == 0) ? Login() : Home();
+      return (box.get('id') == null || box.get('id') == 0)
+          ? Login()
+          : navigation();
     }
   }
 }
