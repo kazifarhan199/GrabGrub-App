@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:grab_grub_app/models/postModel.dart';
 
 import 'home.dart';
 
 class PostCard extends StatefulWidget {
   int index;
-  List<Customer> items;
+  List<PostModel> items;
   PostCard({required this.items, required this.index, super.key});
 
   @override
@@ -25,9 +26,9 @@ class _PostCardState extends State<PostCard> {
           ListTile(
             title: Row(children: [
               CircleAvatar(
-                radius: 25,
-                child: Image.asset(widget.items[widget.index].pic),
-              ),
+                  radius: 25,
+                  backgroundImage:
+                      NetworkImage(widget.items[widget.index].pic)),
               SizedBox(
                 width: 10,
               ),
@@ -45,7 +46,7 @@ class _PostCardState extends State<PostCard> {
           ),
           InkWell(
             onTap: () {},
-            child: Image.asset(
+            child: Image.network(
               widget.items[widget.index].pic,
               height: 300,
             ),
