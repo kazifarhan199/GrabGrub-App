@@ -14,33 +14,6 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   String username = '', password = '';
 
-  Future<void> _showMyDialog(String error) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Can't Login"),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(error),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Ok'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void loginMethod() async {
     try {
       UserModel user =

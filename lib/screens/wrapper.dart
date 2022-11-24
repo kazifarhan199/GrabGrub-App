@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:hive/hive.dart';
-
-import '../models/userModel.dart';
 import 'home.dart';
 import 'login.dart';
+import 'utils/page_loading.dart';
 
 class Wrapper extends StatefulWidget {
   const Wrapper({super.key});
@@ -34,7 +31,7 @@ class _WrapperState extends State<Wrapper> {
   @override
   Widget build(BuildContext context) {
     if (loding == true) {
-      return CircularProgressIndicator();
+      return PageLoading();
     } else {
       return (box.get('id') == null || box.get('id') == 0) ? Login() : Home();
     }
