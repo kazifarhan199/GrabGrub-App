@@ -11,7 +11,6 @@ class ConversationModel {
     Map<String, dynamic> data = {};
     int expectedStatusCode = 200;
 
-    // try {
     data = await sendRequest(
       url: url,
       files: files,
@@ -20,9 +19,6 @@ class ConversationModel {
       needHeader: true,
       Method: "GET",
     );
-    // } catch (e) {
-    //   throw e;
-    // }
 
     List<UserModel> conversations = [];
     for (var obj in data['results']) {
