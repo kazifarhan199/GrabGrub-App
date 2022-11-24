@@ -17,11 +17,18 @@ class _ProfileState extends State<Profile> {
 
   Future<void> refreshMethod() async {
     setState(() => loading = true);
-    await widget.user.refreshProfile();
-    setState(() {
-      widget.user = UserModel.fromHive();
-      loading = false;
-    });
+    try {
+      await widget.user.refreshProfile();
+      setState(() {
+        loading = false;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
   @override
@@ -33,7 +40,7 @@ class _ProfileState extends State<Profile> {
         centerTitle: true,
       ),
       body: loading
-          ? CircularProgressIndicator()
+          ? Center(child: CircularProgressIndicator())
           : RefreshIndicator(
               onRefresh: refreshMethod,
               child: ListView(

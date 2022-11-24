@@ -15,12 +15,15 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<PostModel> postlist = [];
   bool loading = true;
+  String message = '';
 
   void postlistMethod() async {
     setState(() => loading = true);
     try {
       postlist = await PostModel.postList();
+      setState(() => message = '');
     } catch (e) {
+      setState(() => message = e.toString());
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
     }
@@ -48,14 +51,32 @@ class _HomeState extends State<Home> {
             ),
             body: RefreshIndicator(
               onRefresh: refreshMethod,
-              child: ListView.builder(
-                  itemCount: postlist.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return PostCard(
-                      items: postlist,
-                      index: index,
-                    );
-                  }),
+              child: message != ''
+                  ? Container(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.info,
+                              size: 50,
+                            ),
+                            Text(message),
+                            TextButton(
+                                onPressed: refreshMethod,
+                                child: Text("Refresh"))
+                          ],
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: postlist.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return PostCard(
+                          items: postlist,
+                          index: index,
+                        );
+                      }),
             ),
           );
   }

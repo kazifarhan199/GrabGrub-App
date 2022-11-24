@@ -40,10 +40,8 @@ class _ConversationState extends State<Conversation> {
         message = '';
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(e.toString()),
-          duration: Duration(days: 365),
-          action: SnackBarAction(label: "Retry", onPressed: refreshMethod)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
       setState(() {
         loading = false;
         message = e.toString();
@@ -76,6 +74,10 @@ class _ConversationState extends State<Conversation> {
                               Icons.info,
                               size: 50,
                             ),
+                            Text(message),
+                            TextButton(
+                                onPressed: refreshMethod,
+                                child: Text("Refresh"))
                           ],
                         ),
                       ),
