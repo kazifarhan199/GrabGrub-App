@@ -124,6 +124,7 @@ class _ProfileState extends State<Profile> {
       username = widget.user.username;
       image = null;
       needSaving = false;
+      email = widget.user.email;
     });
   }
 
