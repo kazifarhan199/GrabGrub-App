@@ -3,6 +3,7 @@ import 'package:grab_grub_app/models/userModel.dart';
 
 import '../routing.dart';
 import 'home.dart';
+import 'navigationBar.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
