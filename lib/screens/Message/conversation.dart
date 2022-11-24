@@ -59,7 +59,6 @@ class _ConversationState extends State<Conversation> {
     return loading
         ? PageLoading()
         : Scaffold(
-            appBar: AppBar(title: Text("Messages")),
             body: RefreshIndicator(
               onRefresh: refreshMethod,
               child: message != ''

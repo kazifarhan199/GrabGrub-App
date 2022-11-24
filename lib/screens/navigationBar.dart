@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:grab_grub_app/screens/Message/conversation.dart';
 import 'package:grab_grub_app/screens/home.dart';
 
 class navigation extends StatefulWidget {
@@ -16,10 +17,7 @@ class _navigationState extends State<navigation> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     Home(),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
+    Conversation(),
     Text(
       'Index 2: School',
       style: optionStyle,
@@ -36,7 +34,11 @@ class _navigationState extends State<navigation> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("GrabGrub"),
+          title: _selectedIndex == 0
+              ? Text("GrabGrub")
+              : _selectedIndex == 1
+                  ? Text("Messages")
+                  : Text("data"),
           centerTitle: true,
         ),
         body: Center(
@@ -49,8 +51,8 @@ class _navigationState extends State<navigation> {
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.business),
-              label: 'Business',
+              icon: Icon(Icons.message),
+              label: 'Messages',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.school),
