@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grab_grub_app/screens/tabs.dart';
 import 'package:hive/hive.dart';
 import 'home.dart';
 import 'login.dart';
@@ -34,9 +35,7 @@ class _WrapperState extends State<Wrapper> {
     if (loding == true) {
       return PageLoading();
     } else {
-      return (box.get('id') == null || box.get('id') == 0)
-          ? Login()
-          : navigation();
+      return (box.get('id') == null || box.get('id') == 0) ? Login() : Tabs();
     }
   }
 }

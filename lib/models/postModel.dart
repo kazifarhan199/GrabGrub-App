@@ -9,6 +9,7 @@ class PostModel {
   int comments;
   String name;
   String userImage;
+  int userid;
 
   PostModel({
     required this.text,
@@ -17,6 +18,7 @@ class PostModel {
     required this.comments,
     required this.name,
     required this.userImage,
+    required this.userid,
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
@@ -24,30 +26,27 @@ class PostModel {
       return throw ("Can't find user data");
     }
     return PostModel(
-      text: json['text'],
-      pic: json['image'],
-      likes: json['likes'],
-      comments: json['comments'],
-      name: json['user_username'],
-      userImage: json['user_image'],
-    );
+        text: json['text'],
+        pic: json['image'],
+        likes: json['likes'],
+        comments: json['comments'],
+        name: json['user_username'],
+        userImage: json['user_image'],
+        userid: json['user']);
   }
 
-  static Future<List<PostModel>> postList(
-      // required String username,
+  static Future<List<PostModel>> postList({String username = ""}
       // required String token,
       ) async {
     Iterable<MultipartFile> files = [];
     Map<String, String> body = {};
-    String url = '/posts/';
     Map<String, dynamic> data = {};
+    String url = '/posts/';
     int expectedStatusCode = 200;
 
-    // body['text'] = username;
-    // body['pic'] = image;
-    // body['likes'] = likes;
-    // body['comments'] = comments;
-    // body['name'] = user_username;
+    if (username != "") {
+      url = '/posts/?u=${username}';
+    }
 
     data = await sendRequest(
       url: url,
@@ -58,7 +57,6 @@ class PostModel {
       Method: "GET",
     );
 
-    //data['username'] = username;
     List<PostModel> posts = [];
     for (var obj in data['results']) {
       posts.add(PostModel.fromJson(obj));

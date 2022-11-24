@@ -2,13 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:grab_grub_app/models/postModel.dart';
+import 'package:grab_grub_app/models/userModel.dart';
 
+import 'Profile/profile.dart';
 import 'home.dart';
 
 class PostCard extends StatefulWidget {
   int index;
+  bool goToUser;
   List<PostModel> items;
-  PostCard({required this.items, required this.index, super.key});
+  PostCard(
+      {required this.items,
+      required this.index,
+      this.goToUser = true,
+      super.key});
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -17,6 +24,27 @@ class PostCard extends StatefulWidget {
 // mamathaputta
 // sagarputtamp
 class _PostCardState extends State<PostCard> {
+  bool userLoading = false;
+  userProfileMethod() async {
+    if (widget.goToUser) {
+      setState(() => userLoading = true);
+      try {
+        UserModel user = await UserModel.getProfile(
+            userId: widget.items[widget.index].userid);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Profile(
+                      user: user,
+                    )));
+      } catch (e) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    }
+    setState(() => userLoading = false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -24,24 +52,33 @@ class _PostCardState extends State<PostCard> {
       child: Column(
         children: [
           ListTile(
-            title: Row(children: [
-              CircleAvatar(
-                  radius: 25,
-                  backgroundImage:
-                      NetworkImage(widget.items[widget.index].userImage)),
-              SizedBox(
-                width: 10,
-              ),
-              Column(children: [
+            title: InkWell(
+              onTap: userProfileMethod,
+              child: Row(children: [
+                userLoading
+                    ? CircularProgressIndicator()
+                    : CircleAvatar(
+                        radius: 25,
+                        backgroundImage:
+                            NetworkImage(widget.items[widget.index].userImage)),
                 SizedBox(
-                  height: 5,
+                  width: 10,
                 ),
-                Text(widget.items[widget.index].name,
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                Text("date", style: TextStyle(fontStyle: FontStyle.italic)),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: Text(widget.items[widget.index].name,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18)),
+                      ),
+                    ],
+                  ),
+                  Text("date", style: TextStyle(fontStyle: FontStyle.italic)),
+                ]),
               ]),
-            ]),
+            ),
             trailing: Icon(Icons.keyboard_control),
           ),
           InkWell(

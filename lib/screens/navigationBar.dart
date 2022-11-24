@@ -21,7 +21,8 @@ class _navigationState extends State<navigation> {
   static List<Widget> _widgetOptions = <Widget>[
     Home(),
     Conversation(),
-    Profile(user: UserModel.fromHive()),
+    Text(""),
+    // Profile(user: UserModel.fromHive()),
   ];
 
   void _onItemTapped(int index) {

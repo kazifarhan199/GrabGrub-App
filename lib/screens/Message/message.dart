@@ -7,6 +7,8 @@ import 'package:grab_grub_app/models/messageModel.dart';
 import 'package:grab_grub_app/models/userModel.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../Profile/profile.dart';
+
 class Message extends StatefulWidget {
   int user_id;
   UserModel user;
@@ -40,6 +42,7 @@ class _MessageState extends State<Message> {
 
   Future getMessagesMethod() async {
     setState(() => loading = true);
+    // try{}catch{}
     messages = (await MessageModel.getMessages(widget.user_id));
     setState(() => loading = false);
   }
@@ -80,16 +83,27 @@ class _MessageState extends State<Message> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            CircleAvatar(
-              backgroundImage: CachedNetworkImageProvider(widget.user.image),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Flexible(child: Text(widget.user.username)),
-          ],
+        title: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Profile(
+                        user: widget.user,
+                      )),
+            );
+          },
+          child: Row(
+            children: [
+              CircleAvatar(
+                backgroundImage: CachedNetworkImageProvider(widget.user.image),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Flexible(child: Text(widget.user.username)),
+            ],
+          ),
         ),
         centerTitle: true,
       ),
