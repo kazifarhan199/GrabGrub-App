@@ -1,10 +1,12 @@
 import 'package:grab_grub_app/models/utils.dart/sendRequest.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UserModel {
   int id;
   String username;
+  String email;
   String token;
   String image;
   String bio;
@@ -15,6 +17,7 @@ class UserModel {
     required this.token,
     required this.image,
     required this.bio,
+    required this.email,
   });
 
   factory UserModel.fromHive() {
@@ -25,6 +28,7 @@ class UserModel {
       token: box.get('token'),
       image: box.get('image'),
       bio: box.get('bio'),
+      email: box.get('email'),
     );
   }
 
@@ -38,6 +42,7 @@ class UserModel {
       token: json['token'] ?? "",
       image: json['image_url'],
       bio: json['bio'] ?? "",
+      email: json['email'],
     );
   }
 
@@ -51,6 +56,7 @@ class UserModel {
       box.put('image', user.image);
       box.put('token', user.token);
       box.put('bio', user.bio);
+      box.put('email', user.email);
     }
   }
 
@@ -154,6 +160,38 @@ class UserModel {
     );
 
     UserModel user = UserModel.fromJson(data);
+    return user;
+  }
+
+  Future<UserModel> editUser({
+    required String username,
+    required String bio,
+    required String email,
+    XFile? image,
+  }) async {
+    Iterable<MultipartFile> files = [];
+    Map<String, String> body = {};
+    String url = '/accounts/profile-edit/';
+    Map<String, dynamic> data = {};
+    int expectedStatusCode = 200;
+    bool needHeader = true;
+    String method = "PUT";
+
+    body['username'] = username;
+    body['email'] = bio;
+    body['token'] = this.token;
+    body['email'] = email;
+
+    data = await sendRequest(
+        url: url,
+        files: files,
+        body: body,
+        expectedStatusCode: expectedStatusCode,
+        needHeader: needHeader,
+        Method: method);
+
+    UserModel user = UserModel.fromJson(data);
+    saveToHive(user);
     return user;
   }
 }

@@ -33,20 +33,20 @@ class _ConversationState extends State<Conversation> {
 
   getConversationsMethod() async {
     setState(() => loading = true);
-    try {
-      users = await ConversationModel.getConversations();
-      setState(() {
-        loading = false;
-        message = '';
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
-      setState(() {
-        loading = false;
-        message = e.toString();
-      });
-    }
+    // try {
+    users = await ConversationModel.getConversations();
+    setState(() {
+      loading = false;
+      message = '';
+    });
+    // } catch (e) {
+    //   ScaffoldMessenger.of(context)
+    //       .showSnackBar(SnackBar(content: Text(e.toString())));
+    //   setState(() {
+    //     loading = false;
+    //     message = e.toString();
+    //   });
+    // }
   }
 
   messageMethod(int user_id, UserModel user) {

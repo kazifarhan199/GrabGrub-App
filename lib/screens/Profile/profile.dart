@@ -29,17 +29,17 @@ class _ProfileState extends State<Profile> {
   String username = "", bio = "";
   var box = Hive.box('userBox');
   List<PostModel> postlist = [];
-  bool postLoading = true;
-  String message = '';
+  bool postLoading = true, savingLoading = false;
+  String message = '', email = '', errormessage = "";
   bool canedit = false;
 
   void postlistMethod() async {
     if (mounted) setState(() => postLoading = true);
     try {
       postlist = await PostModel.postList(username: widget.user.username);
-      setState(() => message = '');
+      setState(() => errormessage = '');
     } catch (e) {
-      if (mounted) setState(() => message = e.toString());
+      if (mounted) setState(() => errormessage = e.toString());
       if (mounted)
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.toString())));
@@ -79,6 +79,18 @@ class _ProfileState extends State<Profile> {
     }
   }
 
+  editemailMethod(String val) {
+    if (widget.user.id == box.get('id')) {
+      setState(() {
+        email = val;
+        needSaving = true;
+      });
+    } else {
+      // If some other users profile
+
+    }
+  }
+
   editBioMethod(String val) {
     if (widget.user.id == box.get('id')) {
       setState(() {
@@ -91,15 +103,22 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-  saveMthod() {
-    setState(() {
-      needSaving = false;
-    });
+  saveMthod() async {
+    if (mounted) setState(() => savingLoading = true);
+    try {
+      await widget.user.editUser(username: username, email: email, bio: bio);
+      setState(() {
+        needSaving = false;
+      });
+    } catch (e) {
+      if (mounted)
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+    if (mounted) setState(() => savingLoading = false);
   }
 
   revertMethod() {
-    showAlertDialog(context,
-        title: "Unsaved Changes", content: "Please save your unsaved changes.");
     setState(() {
       bio = widget.user.bio;
       username = widget.user.username;
@@ -164,6 +183,7 @@ class _ProfileState extends State<Profile> {
     postlistMethod();
     username = widget.user.username;
     bio = widget.user.bio;
+    email = widget.user.email;
   }
 
   messageMethod() {
@@ -201,7 +221,7 @@ class _ProfileState extends State<Profile> {
               onRefresh: refreshMethod,
               child: ListView.builder(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: postlist.length + 1,
+                  itemCount: postlist.length + 2,
                   itemBuilder: (context, index) {
                     if (index == 0)
                       return Column(
@@ -315,6 +335,46 @@ class _ProfileState extends State<Profile> {
                               ),
                             ],
                           ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Center(
+                              child: PopupMenuButton(
+                                  position: PopupMenuPosition.under,
+                                  child: Text(
+                                    email,
+                                    style: TextStyle(fontSize: 10.0),
+                                  ),
+                                  constraints: BoxConstraints(
+                                    maxWidth: MediaQuery.of(context).size.width,
+                                  ),
+                                  itemBuilder: (context) {
+                                    return [
+                                      if (canedit)
+                                        PopupMenuItem<int>(
+                                          value: 0,
+                                          child: Row(
+                                            children: [
+                                              SizedBox(
+                                                height: 60,
+                                                width: 240,
+                                                child: TextFormField(
+                                                  onChanged: editemailMethod,
+                                                  initialValue: email,
+                                                  decoration: InputDecoration(
+                                                    border:
+                                                        OutlineInputBorder(),
+                                                    hintText: 'email',
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                    ];
+                                  },
+                                  onSelected: (value) => getImage(value)),
+                            ),
+                          ),
                           SizedBox(
                             height: 10,
                           ),
@@ -371,37 +431,70 @@ class _ProfileState extends State<Profile> {
                           ),
                         ],
                       );
-                    else
+                    else if (errormessage == "" &&
+                        postlist.length > 0 &&
+                        index <= postlist.length)
                       return postLoading
                           ? Container()
                           : PostCard(
                               items: postlist,
                               index: index - 1,
                               goToUser: false);
-                  }
-                  // Padding(
-                  //   padding: const EdgeInsets.all(8.0),
-                  //   child: SizedBox(
-                  //     height: 400,
-                  //     child: postLoading
-                  //         ? Container()
-                  //         : ListView.builder(
-                  //             itemBuilder: ((context, index) => PostCard(
-                  //                   items: postlist,
-                  //                   index: index,
-                  //                 )),
-                  //             itemCount: 3,
-                  //           ),
-                  //   ),
-                  // )
-                  // ],
-                  ),
+                    else if (errormessage != "")
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Container(
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: 50,
+                                ),
+                                Icon(
+                                  Icons.info,
+                                  size: 50,
+                                ),
+                                Text(errormessage),
+                                TextButton(
+                                    onPressed: refreshMethod,
+                                    child: Text("Refresh"))
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    else if (postlist.length == 0)
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Container(
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: 100,
+                                ),
+                                Text("No posts yet"),
+                                TextButton(
+                                    onPressed: refreshMethod,
+                                    child: Text("Refresh"))
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    else
+                      return Container();
+                  }),
             ),
       floatingActionButton: !needSaving
           ? Container()
           : FloatingActionButton(
               onPressed: saveMthod,
-              child: Icon(Icons.save),
+              child: savingLoading
+                  ? CircularProgressIndicator()
+                  : Icon(Icons.save),
             ),
     );
   }

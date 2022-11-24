@@ -11,22 +11,23 @@ class ConversationModel {
     Map<String, dynamic> data = {};
     int expectedStatusCode = 200;
 
-    try {
-      data = await sendRequest(
-        url: url,
-        files: files,
-        body: body,
-        expectedStatusCode: expectedStatusCode,
-        needHeader: true,
-        Method: "GET",
-      );
-    } catch (e) {
-      throw e;
-    }
+    // try {
+    data = await sendRequest(
+      url: url,
+      files: files,
+      body: body,
+      expectedStatusCode: expectedStatusCode,
+      needHeader: true,
+      Method: "GET",
+    );
+    // } catch (e) {
+    //   throw e;
+    // }
 
     List<UserModel> conversations = [];
     for (var obj in data['results']) {
       obj['username'] = obj['to_username'];
+      obj['email'] = obj['to_email'];
       obj['id'] = obj['to'];
       obj['image_url'] = obj['to_image'];
       conversations.add(UserModel.fromJson(obj));
