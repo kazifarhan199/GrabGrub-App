@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:grab_grub_app/models/userModel.dart';
 import 'package:grab_grub_app/screens/Message/conversation.dart';
 import 'package:grab_grub_app/screens/home.dart';
+
+import 'Profile/profile.dart';
 
 class navigation extends StatefulWidget {
   const navigation({super.key});
@@ -15,13 +18,10 @@ class _navigationState extends State<navigation> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
+  static List<Widget> _widgetOptions = <Widget>[
     Home(),
     Conversation(),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
+    Profile(user: UserModel.fromHive()),
   ];
 
   void _onItemTapped(int index) {
@@ -33,30 +33,24 @@ class _navigationState extends State<navigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: _selectedIndex == 0
-              ? Text("GrabGrub")
-              : _selectedIndex == 1
-                  ? Text("Messages")
-                  : Text("data"),
-          centerTitle: true,
-        ),
-        body: Center(
-          child: _widgetOptions.elementAt(_selectedIndex),
+        body: SafeArea(
+          child: Center(
+            child: _widgetOptions.elementAt(_selectedIndex),
+          ),
         ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: 'Home',
+              label: '',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.message),
-              label: 'Messages',
+              label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.school),
-              label: 'School',
+              icon: Icon(Icons.person),
+              label: '',
             ),
           ],
           currentIndex: _selectedIndex,

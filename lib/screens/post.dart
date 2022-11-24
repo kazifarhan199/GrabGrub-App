@@ -28,7 +28,7 @@ class _PostCardState extends State<PostCard> {
               CircleAvatar(
                   radius: 25,
                   backgroundImage:
-                      NetworkImage(widget.items[widget.index].pic)),
+                      NetworkImage(widget.items[widget.index].userImage)),
               SizedBox(
                 width: 10,
               ),

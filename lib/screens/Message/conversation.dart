@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -50,8 +51,8 @@ class _ConversationState extends State<Conversation> {
     }
   }
 
-  messageMethod(int user_id, String username) {
-    Routing.messagePage(context: context, user_id: user_id, username: username);
+  messageMethod(int user_id, UserModel user) {
+    Routing.messagePage(context: context, user_id: user_id, user: user);
   }
 
   @override
@@ -59,6 +60,10 @@ class _ConversationState extends State<Conversation> {
     return loading
         ? PageLoading()
         : Scaffold(
+            appBar: AppBar(
+              title: Text("Messages"),
+              centerTitle: true,
+            ),
             body: RefreshIndicator(
               onRefresh: refreshMethod,
               child: message != ''
@@ -79,8 +84,8 @@ class _ConversationState extends State<Conversation> {
                       itemCount: users.length,
                       itemBuilder: (context, index) {
                         return InkWell(
-                          onTap: () => messageMethod(
-                              users[index].id, users[index].username),
+                          onTap: () =>
+                              messageMethod(users[index].id, users[index]),
                           child: Card(
                             elevation: 7.0,
                             child: Padding(
@@ -88,14 +93,18 @@ class _ConversationState extends State<Conversation> {
                               child: Row(
                                 children: [
                                   CircleAvatar(
-                                    backgroundColor: Colors.grey[400],
+                                    backgroundImage: CachedNetworkImageProvider(
+                                        users[index].image),
                                   ),
                                   SizedBox(
                                     width: 7,
                                   ),
-                                  Text(
-                                    users[index].username,
-                                    style: TextStyle(fontSize: 20.0),
+                                  Flexible(
+                                    child: Text(
+                                      users[index].username,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(fontSize: 20.0),
+                                    ),
                                   )
                                 ],
                               ),

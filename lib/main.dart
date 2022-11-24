@@ -19,6 +19,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         iconTheme: IconThemeData(color: Colors.grey),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: Colors.grey[400], focusColor: Colors.grey[700]),
         appBarTheme: AppBarTheme(
             backgroundColor: Colors.white,
             elevation: 0,

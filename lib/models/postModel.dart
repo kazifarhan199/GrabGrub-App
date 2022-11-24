@@ -8,13 +8,16 @@ class PostModel {
   int likes;
   int comments;
   String name;
+  String userImage;
 
-  PostModel(
-      {required this.text,
-      required this.pic,
-      required this.likes,
-      required this.comments,
-      required this.name});
+  PostModel({
+    required this.text,
+    required this.pic,
+    required this.likes,
+    required this.comments,
+    required this.name,
+    required this.userImage,
+  });
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
     if (json.containsKey(['username', 'token'])) {
@@ -26,6 +29,7 @@ class PostModel {
       likes: json['likes'],
       comments: json['comments'],
       name: json['user_username'],
+      userImage: json['user_image'],
     );
   }
 

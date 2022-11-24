@@ -28,7 +28,7 @@ class ConversationModel {
     for (var obj in data['results']) {
       obj['username'] = obj['to_username'];
       obj['id'] = obj['to'];
-      obj['token'] = "";
+      obj['image_url'] = obj['to_image'];
       conversations.add(UserModel.fromJson(obj));
     }
 

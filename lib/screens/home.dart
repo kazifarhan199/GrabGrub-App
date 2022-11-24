@@ -33,19 +33,30 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
+  Future<void> refreshMethod() async {
+    postlistMethod();
+  }
+
   @override
   Widget build(BuildContext context) {
     return loading
         ? CircularProgressIndicator()
-        : Container(
-            child: ListView.builder(
-                itemCount: postlist.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return PostCard(
-                    items: postlist,
-                    index: index,
-                  );
-                }),
+        : Scaffold(
+            appBar: AppBar(
+              title: Text("GrabGrub"),
+              centerTitle: true,
+            ),
+            body: RefreshIndicator(
+              onRefresh: refreshMethod,
+              child: ListView.builder(
+                  itemCount: postlist.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return PostCard(
+                      items: postlist,
+                      index: index,
+                    );
+                  }),
+            ),
           );
   }
 }

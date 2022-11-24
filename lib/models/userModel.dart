@@ -6,19 +6,26 @@ class UserModel {
   int id;
   String username;
   String token;
+  String image;
+  String bio;
 
   UserModel({
     required this.id,
     required this.username,
     required this.token,
+    required this.image,
+    required this.bio,
   });
 
   factory UserModel.fromHive() {
     var box = Hive.box('userBox');
     return UserModel(
-        id: box.get('id'),
-        username: box.get('username'),
-        token: box.get('token'));
+      id: box.get('id'),
+      username: box.get('username'),
+      token: box.get('token'),
+      image: box.get('image'),
+      bio: box.get('bio'),
+    );
   }
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -28,7 +35,9 @@ class UserModel {
     return UserModel(
       id: json['id'],
       username: json['username'],
-      token: json['token'],
+      token: json['token'] ?? "",
+      image: json['image_url'],
+      bio: json['bio'] ?? "",
     );
   }
 
@@ -39,7 +48,9 @@ class UserModel {
       var box = Hive.box('userBox');
       box.put('id', user.id);
       box.put('username', user.username);
+      box.put('image', user.image);
       box.put('token', user.token);
+      box.put('bio', user.bio);
     }
   }
 
@@ -95,6 +106,30 @@ class UserModel {
       Method: "POST",
     );
 
+    UserModel user = UserModel.fromJson(data);
+    saveToHive(user);
+    return user;
+  }
+
+  Future<UserModel> refreshProfile() async {
+    Iterable<MultipartFile> files = [];
+    Map<String, String> body = {};
+    String url = '/accounts/profile/${this.id}/';
+    Map<String, dynamic> data = {};
+    int expectedStatusCode = 200;
+    bool needHeader = true;
+    String method = "GET";
+
+    data = await sendRequest(
+      url: url,
+      files: files,
+      body: body,
+      expectedStatusCode: expectedStatusCode,
+      needHeader: needHeader,
+      Method: method,
+    );
+
+    data['token'] = this.token;
     UserModel user = UserModel.fromJson(data);
     saveToHive(user);
     return user;

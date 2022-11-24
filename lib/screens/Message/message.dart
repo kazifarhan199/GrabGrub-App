@@ -9,8 +9,8 @@ import 'package:image_picker/image_picker.dart';
 
 class Message extends StatefulWidget {
   int user_id;
-  String username;
-  Message({required this.user_id, required this.username, super.key});
+  UserModel user;
+  Message({required this.user_id, required this.user, super.key});
 
   @override
   State<Message> createState() => _MessageState();
@@ -83,12 +83,12 @@ class _MessageState extends State<Message> {
         title: Row(
           children: [
             CircleAvatar(
-              backgroundColor: Colors.grey[400],
+              backgroundImage: CachedNetworkImageProvider(widget.user.image),
             ),
             SizedBox(
               width: 10,
             ),
-            Text(widget.username),
+            Flexible(child: Text(widget.user.username)),
           ],
         ),
         centerTitle: true,
