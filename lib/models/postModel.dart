@@ -10,8 +10,10 @@ class PostModel {
   String name;
   String userImage;
   int userid;
+  int id;
 
   PostModel({
+    required this.id,
     required this.text,
     required this.pic,
     required this.likes,
@@ -26,6 +28,7 @@ class PostModel {
       return throw ("Can't find user data");
     }
     return PostModel(
+        id: json['id'],
         text: json['text'],
         pic: json['image'],
         likes: json['likes'],

@@ -50,7 +50,7 @@ class _ConversationState extends State<Conversation> {
   }
 
   messageMethod(int user_id, UserModel user) {
-    Routing.messagePage(context: context, user_id: user_id, user: user);
+    Routing.messagePage(context: context, user: user);
   }
 
   @override

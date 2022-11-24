@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:grab_grub_app/models/messageModel.dart';
 import 'package:grab_grub_app/models/postModel.dart';
 import 'package:grab_grub_app/models/userModel.dart';
 
+import '../routing.dart';
 import 'Profile/profile.dart';
 import 'home.dart';
 
@@ -24,7 +26,7 @@ class PostCard extends StatefulWidget {
 // mamathaputta
 // sagarputtamp
 class _PostCardState extends State<PostCard> {
-  bool userLoading = false;
+  bool userLoading = false, messageLoading = false;
   userProfileMethod() async {
     if (widget.goToUser) {
       setState(() => userLoading = true);
@@ -43,6 +45,24 @@ class _PostCardState extends State<PostCard> {
       }
     }
     setState(() => userLoading = false);
+  }
+
+  messageMethod() async {
+    bool messageLoading = false;
+
+    setState(() => messageLoading = true);
+    try {
+      UserModel user =
+          await UserModel.getProfile(userId: widget.items[widget.index].userid);
+      MessageModel _message = await MessageModel.sendMessage(
+          text: "", toUserId: user.id, post: widget.items[widget.index].id);
+
+      Routing.messagePage(context: context, user: user);
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+    setState(() => messageLoading = false);
   }
 
   @override
@@ -115,15 +135,16 @@ class _PostCardState extends State<PostCard> {
               SizedBox(
                 width: 20,
               ),
-              Icon(
-                IconData(0xee41, fontFamily: 'MaterialIcons'),
-                color: Colors.pink,
-                size: 30.0,
-              ),
+              messageLoading
+                  ? CircularProgressIndicator()
+                  : IconButton(
+                      icon: Icon(Icons.message, color: Colors.grey, size: 30.0),
+                      onPressed: messageMethod,
+                    ),
               SizedBox(
                 width: 5,
               ),
-              Text(widget.items[widget.index].comments.toString()),
+              // Text(widget.items[widget.index].comments.toString()),
               SizedBox(
                 width: 10,
               ),

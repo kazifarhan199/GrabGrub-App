@@ -7,7 +7,7 @@ class MessageModel {
   int id;
   String senderUsername, receiverUsername;
   int senderId, receiverId;
-  String text;
+  String text, postText;
   String postImage, image;
   int post;
 
@@ -21,6 +21,7 @@ class MessageModel {
     required this.image,
     required this.postImage,
     required this.post,
+    required this.postText,
   });
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
@@ -33,10 +34,11 @@ class MessageModel {
       receiverUsername: json['to_username'],
       senderId: json['user'],
       receiverId: json['to'],
-      text: json['text'],
+      text: json['text'] ?? "",
       image: json['image'] ?? "",
       postImage: json['post_image'] ?? "",
       post: json['post'] ?? 0,
+      postText: json['post_text'] ?? "",
     );
   }
 
@@ -66,7 +68,10 @@ class MessageModel {
   }
 
   static Future<MessageModel> sendMessage(
-      {String text = "", required int toUserId, XFile? image = null}) async {
+      {String text = "",
+      required int toUserId,
+      XFile? image = null,
+      int post = 0}) async {
     Iterable<MultipartFile> files = [];
     Map<String, String> body = {};
     String url = '/message/create/';
@@ -76,6 +81,8 @@ class MessageModel {
 
     body['text'] = text;
     body['to'] = toUserId.toString();
+    body['to'] = toUserId.toString();
+    if (post != 0) body['post'] = post.toString();
 
     if (image != null) {
       files = [

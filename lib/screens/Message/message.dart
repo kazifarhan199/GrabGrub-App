@@ -10,9 +10,8 @@ import 'package:image_picker/image_picker.dart';
 import '../Profile/profile.dart';
 
 class Message extends StatefulWidget {
-  int user_id;
   UserModel user;
-  Message({required this.user_id, required this.user, super.key});
+  Message({required this.user, super.key});
 
   @override
   State<Message> createState() => _MessageState();
@@ -43,17 +42,18 @@ class _MessageState extends State<Message> {
   Future getMessagesMethod() async {
     setState(() => loading = true);
     // try{}catch{}
-    messages = (await MessageModel.getMessages(widget.user_id));
+    messages = (await MessageModel.getMessages(widget.user.id));
     setState(() => loading = false);
   }
 
+  gotoPostMethod() {}
+
   sendMessageMethod() async {
     setState(() => sending = true);
-    MessageModel _message = messages[0];
     try {
-      _message = await MessageModel.sendMessage(
+      MessageModel _message = await MessageModel.sendMessage(
           text: messageInputController.text,
-          toUserId: widget.user_id,
+          toUserId: widget.user.id,
           image: image);
       setState(() {
         sending = false;
@@ -120,6 +120,56 @@ class _MessageState extends State<Message> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          messages[index].post == null
+                              ? Container()
+                              : messages[index].post == 0
+                                  ? Container()
+                                  : Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment: user.username ==
+                                                messages[index].senderUsername
+                                            ? MainAxisAlignment.end
+                                            : MainAxisAlignment.start,
+                                        children: [
+                                          InkWell(
+                                            onTap: gotoPostMethod,
+                                            child: Card(
+                                              color: Colors.grey,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 100,
+                                                      child: CachedNetworkImage(
+                                                        imageUrl:
+                                                            messages[index]
+                                                                .postImage,
+                                                        height: 100,
+                                                        placeholder: (context,
+                                                                url) =>
+                                                            Center(
+                                                                child:
+                                                                    CircularProgressIndicator()),
+                                                        errorWidget: (context,
+                                                                url, error) =>
+                                                            Icon(Icons.error),
+                                                      ),
+                                                    ),
+                                                    Text(messages[index]
+                                                        .postText),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                           messages[index].image == ""
                               ? Container()
                               : Padding(

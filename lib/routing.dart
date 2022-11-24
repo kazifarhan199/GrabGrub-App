@@ -23,9 +23,8 @@ class Routing {
         .pushReplacement(MaterialPageRoute(builder: (context) => navigation()));
   }
 
-  static messagePage(
-      {var context, required int user_id, required UserModel user}) {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => Message(user_id: user_id, user: user)));
+  static messagePage({var context, required UserModel user}) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => Message(user: user)));
   }
 }

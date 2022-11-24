@@ -9,6 +9,7 @@ import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../models/postModel.dart';
+import '../../routing.dart';
 import '../post.dart';
 
 class Profile extends StatefulWidget {
@@ -165,6 +166,10 @@ class _ProfileState extends State<Profile> {
     bio = widget.user.bio;
   }
 
+  messageMethod() {
+    Routing.messagePage(context: context, user: widget.user);
+  }
+
   Future<void> refreshMethod() async {
     setState(() => loading = true);
     try {
@@ -250,45 +255,65 @@ class _ProfileState extends State<Profile> {
                           SizedBox(
                             height: 10,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Center(
-                              child: PopupMenuButton(
-                                  position: PopupMenuPosition.under,
-                                  child: Text(
-                                    username,
-                                    style: TextStyle(fontSize: 25.0),
-                                  ),
-                                  constraints: BoxConstraints(
-                                    maxWidth: MediaQuery.of(context).size.width,
-                                  ),
-                                  itemBuilder: (context) {
-                                    return [
-                                      if (canedit)
-                                        PopupMenuItem<int>(
-                                          value: 0,
-                                          child: Row(
-                                            children: [
-                                              SizedBox(
-                                                height: 60,
-                                                width: 240,
-                                                child: TextFormField(
-                                                  onChanged: editUsernameMethod,
-                                                  initialValue: username,
-                                                  decoration: InputDecoration(
-                                                    border:
-                                                        OutlineInputBorder(),
-                                                    hintText: 'Username',
-                                                  ),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 15,
+                              ),
+                              IconButton(onPressed: () {}, icon: Container()),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: Center(
+                                    child: PopupMenuButton(
+                                        position: PopupMenuPosition.under,
+                                        child: Text(
+                                          username,
+                                          style: TextStyle(fontSize: 25.0),
+                                        ),
+                                        constraints: BoxConstraints(
+                                          maxWidth:
+                                              MediaQuery.of(context).size.width,
+                                        ),
+                                        itemBuilder: (context) {
+                                          return [
+                                            if (canedit)
+                                              PopupMenuItem<int>(
+                                                value: 0,
+                                                child: Row(
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 60,
+                                                      width: 240,
+                                                      child: TextFormField(
+                                                        onChanged:
+                                                            editUsernameMethod,
+                                                        initialValue: username,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          border:
+                                                              OutlineInputBorder(),
+                                                          hintText: 'Username',
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                    ];
-                                  },
-                                  onSelected: (value) => getImage(value)),
-                            ),
+                                          ];
+                                        },
+                                        onSelected: (value) => getImage(value)),
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                  onPressed: messageMethod,
+                                  icon: Icon(Icons.message)),
+                              SizedBox(
+                                width: 15,
+                              ),
+                            ],
                           ),
                           SizedBox(
                             height: 10,
