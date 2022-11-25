@@ -27,6 +27,7 @@ class _MessageState extends State<Message> {
   final ScrollController _scrollController = ScrollController();
   final ImagePicker picker = ImagePicker();
   XFile? image;
+  bool keepUpdating = true;
 
   Future<void> getImage(int value) async {
     XFile? _image;
@@ -54,6 +55,7 @@ class _MessageState extends State<Message> {
         content: Text(e.toString()),
       ));
     }
+    keppMessagesUpdated();
     setState(() {
       loading = false;
     });
@@ -102,10 +104,36 @@ class _MessageState extends State<Message> {
 
   Future<void> refreshMethod() async {}
 
+  keppMessagesUpdated() async {
+    while (keepUpdating) {
+      try {
+        List<MessageModel> _messages = (await MessageModel.getUpdatedMessages(
+            widget.user.id, messages[0].id));
+        setState(() {
+          messages.insertAll(0, _messages);
+        });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(e.toString()),
+        ));
+      }
+      await Future.delayed(Duration(seconds: 1));
+    }
+  }
+
   @override
   void initState() {
+    keepUpdating = true;
     getMessagesMethod();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    keepUpdating = false;
+
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -203,7 +231,7 @@ class _MessageState extends State<Message> {
                                                           MediaQuery.of(context)
                                                                   .size
                                                                   .width /
-                                                              1.5,
+                                                              1.7,
                                                       child: Text(
                                                           messages[index]
                                                               .postText),

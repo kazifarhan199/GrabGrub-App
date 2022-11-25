@@ -67,6 +67,32 @@ class MessageModel {
     return messages;
   }
 
+  static Future<List<MessageModel>> getUpdatedMessages(
+      int user_id, int latest_id) async {
+    Iterable<MultipartFile> files = [];
+    Map<String, String> body = {};
+    String url = '/message/list-update/${user_id}/${latest_id}/';
+    Map<String, dynamic> data = {};
+    int expectedStatusCode = 200;
+    String method = 'GET';
+
+    data = await sendRequest(
+      url: url,
+      files: files,
+      body: body,
+      expectedStatusCode: expectedStatusCode,
+      needHeader: true,
+      Method: method,
+    );
+
+    List<MessageModel> messages = [];
+    for (var obj in data['results']) {
+      messages.add(MessageModel.fromJson(obj));
+    }
+
+    return messages;
+  }
+
   static Future<MessageModel> sendMessage(
       {String text = "",
       required int toUserId,
