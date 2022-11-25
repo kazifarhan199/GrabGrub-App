@@ -230,12 +230,14 @@ class _ProfileState extends State<Profile> {
         title: Text("Profile"),
         centerTitle: true,
         actions: [
-          IconButton(
-              onPressed: () {
-                widget.user.logout();
-                Routing.wrapperPage(context);
-              },
-              icon: Icon(Icons.logout))
+          widget.user.id != box.get("id")
+              ? Container()
+              : IconButton(
+                  onPressed: () {
+                    widget.user.logout();
+                    Routing.wrapperPage(context);
+                  },
+                  icon: Icon(Icons.logout))
         ],
       ),
       body: loading
