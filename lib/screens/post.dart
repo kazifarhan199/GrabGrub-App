@@ -1,3 +1,4 @@
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -106,7 +107,16 @@ class _PostCardState extends State<PostCard> {
               trailing: Icon(Icons.keyboard_control),
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                showImageViewer(
+                    context,
+                    NetworkImage(
+                      widget.post.pic,
+                    ),
+                    backgroundColor: Color.fromARGB(248, 239, 239, 239),
+                    closeButtonColor: Colors.grey,
+                    swipeDismissible: true);
+              },
               child: Image.network(
                 widget.post.pic,
                 height: 300,
