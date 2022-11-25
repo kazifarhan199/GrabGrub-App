@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:grab_grub_app/models/postModel.dart';
 import 'package:grab_grub_app/models/userModel.dart';
 import 'package:grab_grub_app/screens/Message/message.dart';
+import 'package:grab_grub_app/screens/Profile/leked_posts.dart';
 import 'package:grab_grub_app/screens/login.dart';
 import 'package:grab_grub_app/screens/navigationBar.dart';
 import 'package:grab_grub_app/screens/postdetail.dart';
@@ -40,5 +41,10 @@ class Routing {
   static postDetailPage({required var context, required PostModel post}) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => PostDetail(post: post)));
+  }
+
+  static postLikedPage({required var context, required UserModel user}) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => LikedPosts(user: user)));
   }
 }

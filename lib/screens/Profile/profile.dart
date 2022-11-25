@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:grab_grub_app/models/userModel.dart';
+import 'package:grab_grub_app/screens/utils/error_widget.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -107,7 +108,7 @@ class _ProfileState extends State<Profile> {
     if (mounted) setState(() => savingLoading = true);
     try {
       UserModel _user = await widget.user
-          .editUser(username: username, email: email, bio: bio);
+          .editUser(username: username, email: email, bio: bio, image: image);
       setState(() {
         needSaving = false;
         widget.user = _user;
@@ -212,8 +213,9 @@ class _ProfileState extends State<Profile> {
         loading = false;
       });
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
+      if (errormessage == "") {
+        errormessage = e.toString();
+      }
       setState(() {
         loading = false;
       });
@@ -304,7 +306,16 @@ class _ProfileState extends State<Profile> {
                               SizedBox(
                                 width: 15,
                               ),
-                              IconButton(onPressed: () {}, icon: Container()),
+                              widget.user.id == box.get('id')
+                                  ? IconButton(
+                                      onPressed: () => Routing.postLikedPage(
+                                          context: context, user: widget.user),
+                                      icon: Icon(
+                                        Icons.favorite,
+                                        color: Colors.pink,
+                                      ))
+                                  : IconButton(
+                                      onPressed: () {}, icon: Container()),
                               Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -463,28 +474,16 @@ class _ProfileState extends State<Profile> {
                           : PostCard(
                               post: postlist[index - 1], goToUser: false);
                     else if (errormessage != "")
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Container(
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  height: 50,
-                                ),
-                                Icon(
-                                  Icons.info,
-                                  size: 50,
-                                ),
-                                Text(errormessage),
-                                TextButton(
-                                    onPressed: refreshMethod,
-                                    child: Text("Refresh"))
-                              ],
-                            ),
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: 60,
                           ),
-                        ),
+                          errorWidget(
+                            message: errormessage,
+                            refreshMethod: refreshMethod,
+                          ),
+                        ],
                       );
                     else if (postlist.length == 0)
                       return Padding(

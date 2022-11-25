@@ -48,7 +48,8 @@ class PostModel {
     );
   }
 
-  static Future<List<PostModel>> postList({String username = ""}
+  static Future<List<PostModel>> postList(
+      {String username = "", bool liked = false}
       // required String token,
       ) async {
     Iterable<MultipartFile> files = [];
@@ -59,6 +60,9 @@ class PostModel {
 
     if (username != "") {
       url = '/posts/?u=${username}';
+    }
+    if (liked) {
+      url += '&l=true';
     }
 
     data = await sendRequest(

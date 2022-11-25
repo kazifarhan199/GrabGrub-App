@@ -6,6 +6,7 @@ import 'package:grab_grub_app/models/userModel.dart';
 
 import '../../models/utils.dart/conversationModel.dart';
 import '../../routing.dart';
+import '../utils/error_widget.dart';
 import '../utils/page_loading.dart';
 
 class Conversation extends StatefulWidget {
@@ -65,22 +66,9 @@ class _ConversationState extends State<Conversation> {
           : RefreshIndicator(
               onRefresh: refreshMethod,
               child: message != ''
-                  ? Container(
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.info,
-                              size: 50,
-                            ),
-                            Text(message),
-                            TextButton(
-                                onPressed: refreshMethod,
-                                child: Text("Refresh"))
-                          ],
-                        ),
-                      ),
+                  ? errorWidget(
+                      message: message,
+                      refreshMethod: refreshMethod,
                     )
                   : ListView.builder(
                       itemCount: users.length,

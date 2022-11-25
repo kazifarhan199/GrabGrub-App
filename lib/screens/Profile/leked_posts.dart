@@ -2,19 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:grab_grub_app/models/postModel.dart';
+import 'package:grab_grub_app/models/userModel.dart';
 import 'package:grab_grub_app/screens/utils/error_widget.dart';
 import 'package:grab_grub_app/screens/utils/page_loading.dart';
 
-import 'post.dart';
+import '../post.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class LikedPosts extends StatefulWidget {
+  UserModel user;
+  LikedPosts({required this.user, super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<LikedPosts> createState() => _LikedPostsState();
 }
 
-class _HomeState extends State<Home> {
+class _LikedPostsState extends State<LikedPosts> {
   List<PostModel> postlist = [];
   bool loading = true;
   String message = '';
@@ -22,7 +24,8 @@ class _HomeState extends State<Home> {
   void postlistMethod() async {
     setState(() => loading = true);
     try {
-      postlist = await PostModel.postList();
+      postlist =
+          await PostModel.postList(username: widget.user.username, liked: true);
       setState(() => message = '');
     } catch (e) {
       setState(() => message = e.toString());
@@ -47,7 +50,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("GrabGrub"),
+        title: Text("Liked Posts"),
         centerTitle: true,
       ),
       body: loading
@@ -74,7 +77,7 @@ class _HomeState extends State<Home> {
                     )
                   : postlist.length == 0
                       ? errorWidget(
-                          message: "No Posts to show",
+                          message: "No liked posts",
                           refreshMethod: refreshMethod,
                         )
                       : ListView.builder(
