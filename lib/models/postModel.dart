@@ -11,6 +11,7 @@ class PostModel {
   String userImage;
   int userid;
   int id;
+  String date;
 
   PostModel({
     required this.id,
@@ -21,6 +22,7 @@ class PostModel {
     required this.name,
     required this.userImage,
     required this.userid,
+    required this.date,
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
@@ -28,14 +30,16 @@ class PostModel {
       return throw ("Can't find user data");
     }
     return PostModel(
-        id: json['id'],
-        text: json['text'],
-        pic: json['image'],
-        likes: json['likes'],
-        comments: json['comments'],
-        name: json['user_username'],
-        userImage: json['user_image'],
-        userid: json['user']);
+      id: json['id'],
+      text: json['text'],
+      pic: json['image'],
+      likes: json['likes'],
+      comments: json['comments'],
+      name: json['user_username'],
+      userImage: json['user_image'],
+      userid: json['user'],
+      date: json['date'],
+    );
   }
 
   static Future<List<PostModel>> postList({String username = ""}

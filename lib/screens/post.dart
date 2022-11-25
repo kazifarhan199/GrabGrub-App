@@ -95,7 +95,9 @@ class _PostCardState extends State<PostCard> {
                       ),
                     ],
                   ),
-                  Text("date", style: TextStyle(fontStyle: FontStyle.italic)),
+                  Text(widget.items[widget.index].date,
+                      style:
+                          TextStyle(fontStyle: FontStyle.italic, fontSize: 10)),
                 ]),
               ]),
             ),
