@@ -107,11 +107,19 @@ class _MessageState extends State<Message> {
   keppMessagesUpdated() async {
     while (keepUpdating) {
       try {
-        List<MessageModel> _messages = (await MessageModel.getUpdatedMessages(
-            widget.user.id, messages[0].id));
-        setState(() {
-          messages.insertAll(0, _messages);
-        });
+        if (messages.length != 0) {
+          List<MessageModel> _messages = (await MessageModel.getUpdatedMessages(
+              widget.user.id, messages[0].id));
+          setState(() {
+            messages.insertAll(0, _messages);
+          });
+        } else {
+          List<MessageModel> _messages =
+              (await MessageModel.getMessages(widget.user.id));
+          setState(() {
+            messages.insertAll(0, _messages);
+          });
+        }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(e.toString()),

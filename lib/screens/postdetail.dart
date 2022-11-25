@@ -16,29 +16,20 @@ class PostDetail extends StatefulWidget {
 class _PostDetailState extends State<PostDetail> {
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onVerticalDragUpdate: (details) {
-        print(details.delta.distance);
-        if (details.delta.distance < 0.8) {
-          Navigator.of(context).pop();
-        }
-        // print(details.delta.direction);
-      },
-      child: Scaffold(
-          appBar: AppBar(),
-          body: SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  PostCard(
-                    post: widget.post,
-                    showDetails: true,
-                  ),
-                ],
-              ),
+    return Scaffold(
+        appBar: AppBar(),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                PostCard(
+                  post: widget.post,
+                  showDetails: true,
+                ),
+              ],
             ),
-          )),
-    );
+          ),
+        ));
   }
 }
