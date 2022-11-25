@@ -106,9 +106,11 @@ class _ProfileState extends State<Profile> {
   saveMthod() async {
     if (mounted) setState(() => savingLoading = true);
     try {
-      await widget.user.editUser(username: username, email: email, bio: bio);
+      UserModel _user = await widget.user
+          .editUser(username: username, email: email, bio: bio);
       setState(() {
         needSaving = false;
+        widget.user = _user;
       });
     } catch (e) {
       if (mounted)
@@ -215,6 +217,14 @@ class _ProfileState extends State<Profile> {
       appBar: AppBar(
         title: Text("Profile"),
         centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () {
+                widget.user.logout();
+                Routing.wrapperPage(context);
+              },
+              icon: Icon(Icons.logout))
+        ],
       ),
       body: loading
           ? Center(child: CircularProgressIndicator())

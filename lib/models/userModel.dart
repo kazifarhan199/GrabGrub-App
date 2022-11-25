@@ -47,17 +47,13 @@ class UserModel {
   }
 
   static saveToHive(UserModel user) {
-    if (user.token == '') {
-      print("Token is empty");
-    } else {
-      var box = Hive.box('userBox');
-      box.put('id', user.id);
-      box.put('username', user.username);
-      box.put('image', user.image);
-      box.put('token', user.token);
-      box.put('bio', user.bio);
-      box.put('email', user.email);
-    }
+    var box = Hive.box('userBox');
+    box.put('id', user.id);
+    box.put('username', user.username);
+    box.put('image', user.image);
+    box.put('token', user.token);
+    box.put('bio', user.bio);
+    box.put('email', user.email);
   }
 
   static Future<UserModel> login({
@@ -86,6 +82,12 @@ class UserModel {
     UserModel user = UserModel.fromJson(data);
     saveToHive(user);
     return user;
+  }
+
+  logout() async {
+    UserModel user = UserModel(
+        id: 0, username: "", token: "", image: "", bio: "", email: "");
+    saveToHive(user);
   }
 
   static Future<UserModel> register({
@@ -179,7 +181,6 @@ class UserModel {
 
     body['username'] = username;
     body['email'] = bio;
-    body['token'] = this.token;
     body['email'] = email;
 
     data = await sendRequest(
@@ -190,8 +191,14 @@ class UserModel {
         needHeader: needHeader,
         Method: method);
 
+    data['token'] = this.token;
+
     UserModel user = UserModel.fromJson(data);
     saveToHive(user);
+
+    print(user.email);
+    print(user.username);
+    print(user.image);
     return user;
   }
 }
