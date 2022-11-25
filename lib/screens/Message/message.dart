@@ -280,7 +280,6 @@ class _MessageState extends State<Message> {
                                                     .width -
                                                 40),
                                         child: Card(
-                                          elevation: 7.0,
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 10, horizontal: 6),

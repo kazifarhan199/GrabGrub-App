@@ -137,9 +137,11 @@ class UserModel {
       Method: method,
     );
 
-    data['token'] = this.token;
+    var box = Hive.box("userBox");
+    if (this.id == box.get('id')) data['token'] = this.token;
+
     UserModel user = UserModel.fromJson(data);
-    saveToHive(user);
+    if (this.id == box.get('id')) saveToHive(user);
     return user;
   }
 

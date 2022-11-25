@@ -89,7 +89,6 @@ class _ConversationState extends State<Conversation> {
                           onTap: () =>
                               messageMethod(users[index].id, users[index]),
                           child: Card(
-                            elevation: 7.0,
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Row(
