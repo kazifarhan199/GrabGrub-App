@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:grab_grub_app/models/postModel.dart';
+import 'package:grab_grub_app/screens/utils/page_loading.dart';
 
 import 'post.dart';
 
@@ -24,8 +25,6 @@ class _HomeState extends State<Home> {
       setState(() => message = '');
     } catch (e) {
       setState(() => message = e.toString());
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
     }
     setState(() => loading = false);
   }
@@ -37,19 +36,22 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> refreshMethod() async {
+    setState(() => loading = true);
+    await Future.delayed(Duration(seconds: 1));
     postlistMethod();
+    setState(() => loading = false);
   }
 
   @override
   Widget build(BuildContext context) {
-    return loading
-        ? CircularProgressIndicator()
-        : Scaffold(
-            appBar: AppBar(
-              title: Text("GrabGrub"),
-              centerTitle: true,
-            ),
-            body: RefreshIndicator(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("GrabGrub"),
+        centerTitle: true,
+      ),
+      body: loading
+          ? PageLoading()
+          : RefreshIndicator(
               onRefresh: refreshMethod,
               child: message != ''
                   ? Container(
@@ -77,6 +79,6 @@ class _HomeState extends State<Home> {
                         );
                       }),
             ),
-          );
+    );
   }
 }

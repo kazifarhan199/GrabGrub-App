@@ -27,8 +27,10 @@ class _ConversationState extends State<Conversation> {
   }
 
   Future<void> refreshMethod() async {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    setState(() => loading = true);
+    await Future.delayed(Duration(seconds: 1));
     await getConversationsMethod();
+    setState(() => loading = false);
   }
 
   getConversationsMethod() async {
@@ -40,8 +42,6 @@ class _ConversationState extends State<Conversation> {
         message = '';
       });
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
       setState(() {
         loading = false;
         message = e.toString();
@@ -55,14 +55,14 @@ class _ConversationState extends State<Conversation> {
 
   @override
   Widget build(BuildContext context) {
-    return loading
-        ? PageLoading()
-        : Scaffold(
-            appBar: AppBar(
-              title: Text("Messages"),
-              centerTitle: true,
-            ),
-            body: RefreshIndicator(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Messages"),
+        centerTitle: true,
+      ),
+      body: loading
+          ? PageLoading()
+          : RefreshIndicator(
               onRefresh: refreshMethod,
               child: message != ''
                   ? Container(
@@ -115,6 +115,6 @@ class _ConversationState extends State<Conversation> {
                       },
                     ),
             ),
-          );
+    );
   }
 }

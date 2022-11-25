@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../models/postModel.dart';
 import '../../routing.dart';
 import '../post.dart';
+import '../utils/page_loading.dart';
 
 class Profile extends StatefulWidget {
   UserModel user;
@@ -42,9 +43,6 @@ class _ProfileState extends State<Profile> {
       setState(() => errormessage = '');
     } catch (e) {
       if (mounted) setState(() => errormessage = e.toString());
-      if (mounted)
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.toString())));
     }
     if (mounted) setState(() => postLoading = false);
   }
@@ -207,6 +205,7 @@ class _ProfileState extends State<Profile> {
 
   Future<void> refreshMethod() async {
     setState(() => loading = true);
+    await Future.delayed(Duration(seconds: 1));
     try {
       await widget.user.refreshProfile();
       setState(() {
@@ -241,7 +240,7 @@ class _ProfileState extends State<Profile> {
         ],
       ),
       body: loading
-          ? Center(child: CircularProgressIndicator())
+          ? PageLoading()
           : RefreshIndicator(
               onRefresh: refreshMethod,
               child: ListView.builder(
