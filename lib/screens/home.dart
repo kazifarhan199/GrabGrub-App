@@ -73,8 +73,7 @@ class _HomeState extends State<Home> {
                       itemCount: postlist.length,
                       itemBuilder: (BuildContext context, int index) {
                         return PostCard(
-                          items: postlist,
-                          index: index,
+                          post: postlist[index],
                         );
                       }),
             ),

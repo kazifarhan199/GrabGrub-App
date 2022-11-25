@@ -10,13 +10,13 @@ import 'Profile/profile.dart';
 import 'home.dart';
 
 class PostCard extends StatefulWidget {
-  int index;
   bool goToUser;
-  List<PostModel> items;
+  PostModel post;
+  bool showDetails;
   PostCard(
-      {required this.items,
-      required this.index,
+      {required this.post,
       this.goToUser = true,
+      this.showDetails = false,
       super.key});
 
   @override
@@ -31,8 +31,7 @@ class _PostCardState extends State<PostCard> {
     if (widget.goToUser) {
       setState(() => userLoading = true);
       try {
-        UserModel user = await UserModel.getProfile(
-            userId: widget.items[widget.index].userid);
+        UserModel user = await UserModel.getProfile(userId: widget.post.userid);
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -52,10 +51,9 @@ class _PostCardState extends State<PostCard> {
 
     setState(() => messageLoading = true);
     try {
-      UserModel user =
-          await UserModel.getProfile(userId: widget.items[widget.index].userid);
+      UserModel user = await UserModel.getProfile(userId: widget.post.userid);
       MessageModel _message = await MessageModel.sendMessage(
-          text: "", toUserId: user.id, post: widget.items[widget.index].id);
+          text: "", toUserId: user.id, post: widget.post.id);
 
       Routing.messagePage(context: context, user: user);
     } catch (e) {
@@ -67,109 +65,134 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0.4,
-      child: Column(
-        children: [
-          ListTile(
-            title: InkWell(
-              onTap: userProfileMethod,
-              child: Row(children: [
-                userLoading
-                    ? CircularProgressIndicator()
-                    : CircleAvatar(
-                        radius: 25,
-                        backgroundImage:
-                            NetworkImage(widget.items[widget.index].userImage)),
+    return InkWell(
+      onTap: () => Routing.postDetailPage(context: context, post: widget.post),
+      child: Card(
+        elevation: 0.4,
+        child: Column(
+          children: [
+            ListTile(
+              title: InkWell(
+                onTap: userProfileMethod,
+                child: Row(children: [
+                  userLoading
+                      ? CircularProgressIndicator()
+                      : CircleAvatar(
+                          radius: 25,
+                          backgroundImage: NetworkImage(widget.post.userImage)),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width / 2,
+                              child: Text(widget.post.name,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18)),
+                            ),
+                          ],
+                        ),
+                        Text(widget.post.date,
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic, fontSize: 10)),
+                      ]),
+                ]),
+              ),
+              trailing: Icon(Icons.keyboard_control),
+            ),
+            InkWell(
+              onTap: () {},
+              child: Image.network(
+                widget.post.pic,
+                height: 300,
+              ),
+            ),
+            Row(
+              children: [
                 SizedBox(
                   width: 10,
                 ),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 2,
-                        child: Text(widget.items[widget.index].name,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18)),
-                      ),
-                    ],
-                  ),
-                  Text(widget.items[widget.index].date,
-                      style:
-                          TextStyle(fontStyle: FontStyle.italic, fontSize: 10)),
-                ]),
-              ]),
-            ),
-            trailing: Icon(Icons.keyboard_control),
-          ),
-          InkWell(
-            onTap: () {},
-            child: Image.network(
-              widget.items[widget.index].pic,
-              height: 300,
-            ),
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 10,
-              ),
-              Icon(
-                Icons.favorite,
-                color: Colors.pink,
-                size: 30.0,
-              ),
-              SizedBox(
-                width: 5,
-              ),
-              Text(widget.items[widget.index].likes.toString()),
-              SizedBox(
-                width: 20,
-              ),
-              Expanded(
-                child: ElevatedButton(
-                  //style: raisedButtonStyle,
-                  onPressed: () {},
-                  child: Text('Claim'),
+                Icon(
+                  Icons.favorite,
+                  color: Colors.pink,
+                  size: 30.0,
                 ),
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              messageLoading
-                  ? CircularProgressIndicator()
-                  : IconButton(
-                      icon: Icon(Icons.message, color: Colors.grey, size: 30.0),
-                      onPressed: messageMethod,
-                    ),
-              SizedBox(
-                width: 5,
-              ),
-              // Text(widget.items[widget.index].comments.toString()),
-              SizedBox(
-                width: 10,
-              ),
-            ],
-          ),
-          Container(
-            padding: EdgeInsets.all(16.0),
-            alignment: Alignment.centerLeft,
-            child: Row(
-              children: [
+                SizedBox(
+                  width: 5,
+                ),
+                // Text(widget.post.likes.toString()),
+                SizedBox(
+                  width: 20,
+                ),
                 Expanded(
-                  child: Text(
-                    'Description: ' + widget.items[widget.index].text,
-                    //style: TextStyle(fontWeight: FontWeight.bold),
+                  child: ElevatedButton(
+                    //style: raisedButtonStyle,
+                    onPressed: () {},
+                    child: Text('Claim'),
                   ),
                 ),
+                SizedBox(
+                  width: 20,
+                ),
+                messageLoading
+                    ? CircularProgressIndicator()
+                    : IconButton(
+                        icon:
+                            Icon(Icons.message, color: Colors.grey, size: 30.0),
+                        onPressed: messageMethod,
+                      ),
+                SizedBox(
+                  width: 5,
+                ),
+                // Text(widget.items[widget.index].comments.toString()),
                 SizedBox(
                   width: 10,
                 ),
               ],
             ),
-          ),
-        ],
+            Container(
+              padding: EdgeInsets.all(16.0),
+              alignment: Alignment.centerLeft,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.post.title,
+                      //style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                ],
+              ),
+            ),
+            !widget.showDetails
+                ? Container()
+                : Container(
+                    padding: EdgeInsets.all(16.0),
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Description: ' + widget.post.text,
+                            //style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                      ],
+                    ),
+                  ),
+          ],
+        ),
       ),
     );
   }

@@ -183,6 +183,15 @@ class UserModel {
     body['email'] = bio;
     body['email'] = email;
 
+    if (image != null) {
+      files = [
+        (await MultipartFile.fromPath(
+          'image',
+          image.path,
+        ))
+      ];
+    }
+
     data = await sendRequest(
         url: url,
         files: files,

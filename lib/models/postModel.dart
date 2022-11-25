@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 
 class PostModel {
+  String title;
   String text;
   String pic;
   int likes;
@@ -14,6 +15,7 @@ class PostModel {
   String date;
 
   PostModel({
+    required this.title,
     required this.id,
     required this.text,
     required this.pic,
@@ -39,6 +41,7 @@ class PostModel {
       userImage: json['user_image'],
       userid: json['user'],
       date: json['date'],
+      title: json['title'],
     );
   }
 
@@ -70,5 +73,28 @@ class PostModel {
     }
 
     return posts;
+  }
+
+  static Future<PostModel> postDetail({required int id}
+      // required String token,
+      ) async {
+    Iterable<MultipartFile> files = [];
+    Map<String, String> body = {};
+    Map<String, dynamic> data = {};
+    String url = '/posts/detail/${id}/';
+    int expectedStatusCode = 200;
+
+    data = await sendRequest(
+      url: url,
+      files: files,
+      body: body,
+      expectedStatusCode: expectedStatusCode,
+      needHeader: true,
+      Method: "GET",
+    );
+
+    PostModel post = PostModel.fromJson(data);
+
+    return post;
   }
 }

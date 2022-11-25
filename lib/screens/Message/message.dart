@@ -4,7 +4,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:grab_grub_app/models/messageModel.dart';
+import 'package:grab_grub_app/models/postModel.dart';
 import 'package:grab_grub_app/models/userModel.dart';
+import 'package:grab_grub_app/routing.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../Profile/profile.dart';
@@ -46,7 +48,23 @@ class _MessageState extends State<Message> {
     setState(() => loading = false);
   }
 
-  gotoPostMethod() {}
+  gotoPostMethod(int id) async {
+    setState(() => loading = true);
+    try {
+      PostModel post = await PostModel.postDetail(id: id);
+      setState(() {
+        loading = false;
+      });
+      Routing.postDetailPage(context: context, post: post);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(e.toString()),
+      ));
+      setState(() {
+        loading = false;
+      });
+    }
+  }
 
   sendMessageMethod() async {
     setState(() => sending = true);
@@ -133,7 +151,8 @@ class _MessageState extends State<Message> {
                                             : MainAxisAlignment.start,
                                         children: [
                                           InkWell(
-                                            onTap: gotoPostMethod,
+                                            onTap: () => gotoPostMethod(
+                                                messages[index].post),
                                             child: Card(
                                               color: Colors.grey,
                                               child: Padding(
@@ -144,12 +163,20 @@ class _MessageState extends State<Message> {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     SizedBox(
-                                                      height: 100,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              3,
                                                       child: CachedNetworkImage(
                                                         imageUrl:
                                                             messages[index]
                                                                 .postImage,
-                                                        height: 100,
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width /
+                                                            1.5,
                                                         placeholder: (context,
                                                                 url) =>
                                                             Center(
@@ -160,8 +187,16 @@ class _MessageState extends State<Message> {
                                                             Icon(Icons.error),
                                                       ),
                                                     ),
-                                                    Text(messages[index]
-                                                        .postText),
+                                                    SizedBox(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              1.5,
+                                                      child: Text(
+                                                          messages[index]
+                                                              .postText),
+                                                    ),
                                                   ],
                                                 ),
                                               ),
@@ -187,6 +222,9 @@ class _MessageState extends State<Message> {
                                               NetworkImage(
                                                 messages[index].image,
                                               ),
+                                              backgroundColor: Color.fromARGB(
+                                                  248, 239, 239, 239),
+                                              closeButtonColor: Colors.grey,
                                               swipeDismissible: true);
                                         },
                                         child: Card(

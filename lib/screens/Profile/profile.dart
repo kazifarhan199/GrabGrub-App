@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:grab_grub_app/models/userModel.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
@@ -36,7 +34,11 @@ class _ProfileState extends State<Profile> {
   void postlistMethod() async {
     if (mounted) setState(() => postLoading = true);
     try {
-      postlist = await PostModel.postList(username: widget.user.username);
+      List<PostModel> postlist_ =
+          await PostModel.postList(username: widget.user.username);
+      setState(() {
+        postlist = postlist_;
+      });
       setState(() => errormessage = '');
     } catch (e) {
       if (mounted) setState(() => errormessage = e.toString());
@@ -165,21 +167,23 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  listnerMethod() {
+    if (widget.controller!.indexIsChanging) {
+      if (widget.controller!.index == 2) {
+      } else if (needSaving) {
+        widget.controller!.index = 2;
+        showAlertDialog(context,
+            title: "Unsaved Changes",
+            content: "Please save your unsaved changes.");
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     if (widget.controller != null) {
-      widget.controller!.addListener(() {
-        if (widget.controller!.indexIsChanging) {
-          if (widget.controller!.index == 2) {
-          } else if (needSaving) {
-            widget.controller!.index = 2;
-            showAlertDialog(context,
-                title: "Unsaved Changes",
-                content: "Please save your unsaved changes.");
-          }
-        }
-      });
+      widget.controller!.addListener(listnerMethod);
     }
     canedit = widget.user.username == box.get('username');
 
@@ -187,6 +191,14 @@ class _ProfileState extends State<Profile> {
     username = widget.user.username;
     bio = widget.user.bio;
     email = widget.user.email;
+  }
+
+  @override
+  void dispose() {
+    if (widget.controller != null) {
+      widget.controller!.removeListener(listnerMethod);
+    }
+    super.dispose();
   }
 
   messageMethod() {
@@ -448,9 +460,7 @@ class _ProfileState extends State<Profile> {
                       return postLoading
                           ? Container()
                           : PostCard(
-                              items: postlist,
-                              index: index - 1,
-                              goToUser: false);
+                              post: postlist[index - 1], goToUser: false);
                     else if (errormessage != "")
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10),
