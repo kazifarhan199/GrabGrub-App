@@ -43,9 +43,20 @@ class _MessageState extends State<Message> {
 
   Future getMessagesMethod() async {
     setState(() => loading = true);
-    // try{}catch{}
-    messages = (await MessageModel.getMessages(widget.user.id));
-    setState(() => loading = false);
+    try {
+      List<MessageModel> _messages =
+          (await MessageModel.getMessages(widget.user.id));
+      setState(() {
+        messages = _messages;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(e.toString()),
+      ));
+    }
+    setState(() {
+      loading = false;
+    });
   }
 
   gotoPostMethod(int id) async {
@@ -60,10 +71,10 @@ class _MessageState extends State<Message> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(e.toString()),
       ));
-      setState(() {
-        loading = false;
-      });
     }
+    setState(() {
+      loading = false;
+    });
   }
 
   sendMessageMethod() async {
