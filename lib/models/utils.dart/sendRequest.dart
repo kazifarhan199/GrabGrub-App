@@ -43,7 +43,7 @@ Future<Map<String, dynamic>> sendRequest({
   } on TypeError catch (e) {
     data['results'] = jsonDecode(utf8.decode(response.bodyBytes));
   } catch (e) {
-    throw e.toString();
+    // throw e.toString();
   }
 
   if (response.statusCode == expectedStatusCode) {

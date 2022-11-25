@@ -13,6 +13,7 @@ class PostModel {
   int userid;
   int id;
   String date;
+  bool liked;
 
   PostModel({
     required this.title,
@@ -25,6 +26,7 @@ class PostModel {
     required this.userImage,
     required this.userid,
     required this.date,
+    required this.liked,
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
@@ -42,6 +44,7 @@ class PostModel {
       userid: json['user'],
       date: json['date'],
       title: json['title'],
+      liked: json['has_liked'],
     );
   }
 
@@ -96,5 +99,45 @@ class PostModel {
     PostModel post = PostModel.fromJson(data);
 
     return post;
+  }
+
+  Future addLike() async {
+    Iterable<MultipartFile> files = [];
+    Map<String, String> body = {};
+    Map<String, dynamic> data = {};
+    String url = '/posts/like/add/';
+    int expectedStatusCode = 201;
+
+    body['post'] = this.id.toString();
+
+    data = await sendRequest(
+      url: url,
+      files: files,
+      body: body,
+      expectedStatusCode: expectedStatusCode,
+      needHeader: true,
+      Method: "POST",
+    );
+
+    return true;
+  }
+
+  Future removeLike() async {
+    Iterable<MultipartFile> files = [];
+    Map<String, String> body = {};
+    Map<String, dynamic> data = {};
+    String url = '/posts/like/remove/${this.id}/';
+    int expectedStatusCode = 204;
+
+    data = await sendRequest(
+      url: url,
+      files: files,
+      body: body,
+      expectedStatusCode: expectedStatusCode,
+      needHeader: true,
+      Method: "DELETE",
+    );
+
+    return true;
   }
 }

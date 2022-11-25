@@ -27,7 +27,7 @@ class PostCard extends StatefulWidget {
 // mamathaputta
 // sagarputtamp
 class _PostCardState extends State<PostCard> {
-  bool userLoading = false, messageLoading = false;
+  bool userLoading = false, messageLoading = false, likingLoading = false;
   userProfileMethod() async {
     if (widget.goToUser) {
       setState(() => userLoading = true);
@@ -64,10 +64,49 @@ class _PostCardState extends State<PostCard> {
     setState(() => messageLoading = false);
   }
 
+  addLikeMethod(PostModel post) async {
+    setState(() => likingLoading = true);
+    try {
+      bool done = await post.addLike();
+      setState(() {
+        widget.post.liked = true;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+    setState(() => likingLoading = false);
+  }
+
+  removeLikeMethod(PostModel post) async {
+    setState(() => likingLoading = true);
+    try {
+      bool done = await post.removeLike();
+      setState(() {
+        widget.post.liked = false;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+    setState(() => likingLoading = false);
+  }
+
+  manageLikeMethod(PostModel post) {
+    if (post.liked) {
+      removeLikeMethod(post);
+    } else {
+      addLikeMethod(post);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Routing.postDetailPage(context: context, post: widget.post),
+      onTap: () => {
+        if (widget.showDetails == false)
+          Routing.postDetailPage(context: context, post: widget.post)
+      },
       child: Card(
         elevation: 0.4,
         child: Column(
@@ -127,11 +166,25 @@ class _PostCardState extends State<PostCard> {
                 SizedBox(
                   width: 10,
                 ),
-                Icon(
-                  Icons.favorite,
-                  color: Colors.pink,
-                  size: 30.0,
-                ),
+                likingLoading
+                    ? IconButton(
+                        icon: CircularProgressIndicator(),
+                        onPressed: () {},
+                      )
+                    : IconButton(
+                        onPressed: () => manageLikeMethod(widget.post),
+                        icon: widget.post.liked
+                            ? Icon(
+                                Icons.favorite,
+                                color: Colors.pink,
+                                size: 30.0,
+                              )
+                            : Icon(
+                                Icons.favorite_border,
+                                color: Colors.pink,
+                                size: 30.0,
+                              ),
+                      ),
                 SizedBox(
                   width: 5,
                 ),
