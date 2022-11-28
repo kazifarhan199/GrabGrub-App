@@ -111,8 +111,10 @@ class PostModel {
     Map<String, dynamic> data = {};
     String url = '/posts/like/add/';
     int expectedStatusCode = 201;
+    var box = Hive.box('userBox');
 
     body['post'] = this.id.toString();
+    body['user'] = box.get('id').toString();
 
     data = await sendRequest(
       url: url,
