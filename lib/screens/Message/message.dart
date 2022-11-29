@@ -348,7 +348,7 @@ class _MessageState extends State<Message> {
                   children: [
                     SizedBox(
                       width: 20,
-                      height: 60,
+                      height: 70,
                     ),
                     Expanded(
                         child: Column(
@@ -382,7 +382,9 @@ class _MessageState extends State<Message> {
                               ),
                         TextFormField(
                             controller: messageInputController,
+                            cursorHeight: 10,
                             decoration: const InputDecoration(
+                              border: InputBorder.none,
                               hintText: 'Message',
                             )),
                       ],
