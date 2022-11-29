@@ -70,38 +70,44 @@ class _ConversationState extends State<Conversation> {
                       message: message,
                       refreshMethod: refreshMethod,
                     )
-                  : ListView.builder(
-                      itemCount: users.length,
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          onTap: () =>
-                              messageMethod(users[index].id, users[index]),
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundImage: CachedNetworkImageProvider(
-                                        users[index].image),
+                  : users.length == 0
+                      ? errorWidget(
+                          message: "No conversations",
+                          refreshMethod: refreshMethod,
+                        )
+                      : ListView.builder(
+                          itemCount: users.length,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () =>
+                                  messageMethod(users[index].id, users[index]),
+                              child: Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Row(
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundImage:
+                                            CachedNetworkImageProvider(
+                                                users[index].image),
+                                      ),
+                                      SizedBox(
+                                        width: 7,
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                          users[index].username,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(fontSize: 20.0),
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                  SizedBox(
-                                    width: 7,
-                                  ),
-                                  Flexible(
-                                    child: Text(
-                                      users[index].username,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(fontSize: 20.0),
-                                    ),
-                                  )
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                            );
+                          },
+                        ),
             ),
     );
   }

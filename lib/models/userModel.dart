@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:grab_grub_app/models/utils.dart/sendRequest.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
@@ -60,6 +62,8 @@ class UserModel {
     required String username,
     required String password,
   }) async {
+    if (username == '' || password == '') throw "Please fill all the details";
+
     Iterable<MultipartFile> files = [];
     Map<String, String> body = {};
     String url = '/accounts/login/';
@@ -69,14 +73,19 @@ class UserModel {
     body['username'] = username;
     body['password'] = password;
 
-    data = await sendRequest(
-      url: url,
-      files: files,
-      body: body,
-      expectedStatusCode: expectedStatusCode,
-      needHeader: false,
-      Method: "POST",
-    );
+    try {
+      data = await sendRequest(
+        url: url,
+        files: files,
+        body: body,
+        expectedStatusCode: expectedStatusCode,
+        needHeader: false,
+        Method: "POST",
+      );
+    } catch (e) {
+      e as Map;
+      throw e[e.keys.toList().first][0];
+    }
 
     data['username'] = username;
     UserModel user = UserModel.fromJson(data);
@@ -105,14 +114,23 @@ class UserModel {
     body['email'] = email;
     body['password'] = password;
 
-    data = await sendRequest(
-      url: url,
-      files: files,
-      body: body,
-      expectedStatusCode: expectedStatusCode,
-      needHeader: false,
-      Method: "POST",
-    );
+    try {
+      data = await sendRequest(
+        url: url,
+        files: files,
+        body: body,
+        expectedStatusCode: expectedStatusCode,
+        needHeader: false,
+        Method: "POST",
+      );
+    } catch (e) {
+      e as Map;
+      if (e[e.keys.toList().first][0] == 'This field must be unique.') {
+        throw "User with this ${e.keys.toList().first} already exists";
+      } else {
+        throw e[e.keys.toList().first][0];
+      }
+    }
 
     UserModel user = UserModel.fromJson(data);
     saveToHive(user);
@@ -127,15 +145,19 @@ class UserModel {
     int expectedStatusCode = 200;
     bool needHeader = true;
     String method = "GET";
-
-    data = await sendRequest(
-      url: url,
-      files: files,
-      body: body,
-      expectedStatusCode: expectedStatusCode,
-      needHeader: needHeader,
-      Method: method,
-    );
+    try {
+      data = await sendRequest(
+        url: url,
+        files: files,
+        body: body,
+        expectedStatusCode: expectedStatusCode,
+        needHeader: needHeader,
+        Method: method,
+      );
+    } catch (e) {
+      e as Map;
+      throw e[e.keys.toList().first][0];
+    }
 
     var box = Hive.box("userBox");
     if (this.id == box.get('id')) data['token'] = this.token;
@@ -154,14 +176,19 @@ class UserModel {
     bool needHeader = true;
     String method = "GET";
 
-    data = await sendRequest(
-      url: url,
-      files: files,
-      body: body,
-      expectedStatusCode: expectedStatusCode,
-      needHeader: needHeader,
-      Method: method,
-    );
+    try {
+      data = await sendRequest(
+        url: url,
+        files: files,
+        body: body,
+        expectedStatusCode: expectedStatusCode,
+        needHeader: needHeader,
+        Method: method,
+      );
+    } catch (e) {
+      e as Map;
+      throw e[e.keys.toList().first][0];
+    }
 
     UserModel user = UserModel.fromJson(data);
     return user;
@@ -194,13 +221,22 @@ class UserModel {
       ];
     }
 
-    data = await sendRequest(
-        url: url,
-        files: files,
-        body: body,
-        expectedStatusCode: expectedStatusCode,
-        needHeader: needHeader,
-        Method: method);
+    try {
+      data = await sendRequest(
+          url: url,
+          files: files,
+          body: body,
+          expectedStatusCode: expectedStatusCode,
+          needHeader: needHeader,
+          Method: method);
+    } catch (e) {
+      e as Map;
+      if (e[e.keys.toList().first][0] == 'This field must be unique.') {
+        throw "User with this ${e.keys.toList().first} already exists";
+      } else {
+        throw e[e.keys.toList().first][0];
+      }
+    }
 
     data['token'] = this.token;
 

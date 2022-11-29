@@ -50,14 +50,19 @@ class MessageModel {
     int expectedStatusCode = 200;
     String method = 'GET';
 
-    data = await sendRequest(
-      url: url,
-      files: files,
-      body: body,
-      expectedStatusCode: expectedStatusCode,
-      needHeader: true,
-      Method: method,
-    );
+    try {
+      data = await sendRequest(
+        url: url,
+        files: files,
+        body: body,
+        expectedStatusCode: expectedStatusCode,
+        needHeader: true,
+        Method: method,
+      );
+    } catch (e) {
+      e as Map;
+      throw e[e.keys.toList().first][0];
+    }
 
     List<MessageModel> messages = [];
     for (var obj in data['results']) {
@@ -76,14 +81,19 @@ class MessageModel {
     int expectedStatusCode = 200;
     String method = 'GET';
 
-    data = await sendRequest(
-      url: url,
-      files: files,
-      body: body,
-      expectedStatusCode: expectedStatusCode,
-      needHeader: true,
-      Method: method,
-    );
+    try {
+      data = await sendRequest(
+        url: url,
+        files: files,
+        body: body,
+        expectedStatusCode: expectedStatusCode,
+        needHeader: true,
+        Method: method,
+      );
+    } catch (e) {
+      e as Map;
+      throw e[e.keys.toList().first][0];
+    }
 
     List<MessageModel> messages = [];
     for (var obj in data['results']) {
@@ -119,16 +129,19 @@ class MessageModel {
       ];
     }
 
-    print(image);
-
-    data = await sendRequest(
-      url: url,
-      files: files,
-      body: body,
-      expectedStatusCode: expectedStatusCode,
-      needHeader: true,
-      Method: method,
-    );
+    try {
+      data = await sendRequest(
+        url: url,
+        files: files,
+        body: body,
+        expectedStatusCode: expectedStatusCode,
+        needHeader: true,
+        Method: method,
+      );
+    } catch (e) {
+      e as Map;
+      throw e[e.keys.toList().first][0];
+    }
 
     MessageModel message = MessageModel.fromJson(data);
 

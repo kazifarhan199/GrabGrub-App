@@ -65,14 +65,19 @@ class PostModel {
       url += '&l=true';
     }
 
-    data = await sendRequest(
-      url: url,
-      files: files,
-      body: body,
-      expectedStatusCode: expectedStatusCode,
-      needHeader: true,
-      Method: "GET",
-    );
+    try {
+      data = await sendRequest(
+        url: url,
+        files: files,
+        body: body,
+        expectedStatusCode: expectedStatusCode,
+        needHeader: true,
+        Method: "GET",
+      );
+    } catch (e) {
+      e as Map;
+      throw e[e.keys.toList().first][0];
+    }
 
     List<PostModel> posts = [];
     for (var obj in data['results']) {
@@ -91,14 +96,19 @@ class PostModel {
     String url = '/posts/detail/${id}/';
     int expectedStatusCode = 200;
 
-    data = await sendRequest(
-      url: url,
-      files: files,
-      body: body,
-      expectedStatusCode: expectedStatusCode,
-      needHeader: true,
-      Method: "GET",
-    );
+    try {
+      data = await sendRequest(
+        url: url,
+        files: files,
+        body: body,
+        expectedStatusCode: expectedStatusCode,
+        needHeader: true,
+        Method: "GET",
+      );
+    } catch (e) {
+      e as Map;
+      throw e[e.keys.toList().first][0];
+    }
 
     PostModel post = PostModel.fromJson(data);
 
@@ -116,14 +126,19 @@ class PostModel {
     body['post'] = this.id.toString();
     body['user'] = box.get('id').toString();
 
-    data = await sendRequest(
-      url: url,
-      files: files,
-      body: body,
-      expectedStatusCode: expectedStatusCode,
-      needHeader: true,
-      Method: "POST",
-    );
+    try {
+      data = await sendRequest(
+        url: url,
+        files: files,
+        body: body,
+        expectedStatusCode: expectedStatusCode,
+        needHeader: true,
+        Method: "POST",
+      );
+    } catch (e) {
+      e as Map;
+      throw e[e.keys.toList().first][0];
+    }
 
     return true;
   }
@@ -135,14 +150,19 @@ class PostModel {
     String url = '/posts/like/remove/${this.id}/';
     int expectedStatusCode = 204;
 
-    data = await sendRequest(
-      url: url,
-      files: files,
-      body: body,
-      expectedStatusCode: expectedStatusCode,
-      needHeader: true,
-      Method: "DELETE",
-    );
+    try {
+      data = await sendRequest(
+        url: url,
+        files: files,
+        body: body,
+        expectedStatusCode: expectedStatusCode,
+        needHeader: true,
+        Method: "DELETE",
+      );
+    } catch (e) {
+      e as Map;
+      throw e[e.keys.toList().first][0];
+    }
 
     return true;
   }

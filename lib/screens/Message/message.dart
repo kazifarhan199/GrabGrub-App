@@ -51,6 +51,7 @@ class _MessageState extends State<Message> {
         messages = _messages;
       });
     } catch (e) {
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(e.toString()),
       ));
@@ -70,6 +71,7 @@ class _MessageState extends State<Message> {
       });
       Routing.postDetailPage(context: context, post: post);
     } catch (e) {
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(e.toString()),
       ));
@@ -93,6 +95,7 @@ class _MessageState extends State<Message> {
       });
       messages.insert(0, _message);
     } catch (e) {
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(e.toString()),
       ));
@@ -121,6 +124,7 @@ class _MessageState extends State<Message> {
           });
         }
       } catch (e) {
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(e.toString()),
         ));

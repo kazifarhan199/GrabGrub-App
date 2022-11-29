@@ -49,6 +49,6 @@ Future<Map<String, dynamic>> sendRequest({
   if (response.statusCode == expectedStatusCode) {
     return data;
   } else {
-    throw data.toString();
+    throw data;
   }
 }
