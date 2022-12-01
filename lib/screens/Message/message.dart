@@ -348,7 +348,7 @@ class _MessageState extends State<Message> {
                   children: [
                     SizedBox(
                       width: 20,
-                      height: 70,
+                      height: 90,
                     ),
                     Expanded(
                         child: Column(
