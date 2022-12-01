@@ -24,8 +24,6 @@ class PostCard extends StatefulWidget {
   State<PostCard> createState() => _PostCardState();
 }
 
-// mamathaputta
-// sagarputtamp
 class _PostCardState extends State<PostCard> {
   bool userLoading = false, messageLoading = false, likingLoading = false;
   userProfileMethod() async {
@@ -218,15 +216,29 @@ class _PostCardState extends State<PostCard> {
                 ),
               ],
             ),
+            SizedBox(
+              height: 16,
+            ),
             Container(
-              padding: EdgeInsets.all(16.0),
+              padding: EdgeInsets.symmetric(horizontal: 16),
               alignment: Alignment.centerLeft,
               child: Row(
                 children: [
                   Expanded(
                     child: Text(
                       widget.post.title,
-                      //style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ),
+                  Tooltip(
+                    message: "Number of servings",
+                    child: CircleAvatar(
+                      radius: 15,
+                      backgroundColor: Colors.grey[200],
+                      child: Text(
+                        widget.post.servings.toString(),
+                        style: TextStyle(fontSize: 15),
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -235,21 +247,28 @@ class _PostCardState extends State<PostCard> {
                 ],
               ),
             ),
+            SizedBox(
+              height: 10,
+            ),
             !widget.showDetails
                 ? Container()
                 : Container(
-                    padding: EdgeInsets.all(16.0),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 5),
                     alignment: Alignment.centerLeft,
-                    child: Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Text(
-                            'Description: ' + widget.post.text,
-                            //style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                        Text(
+                          'Description:',
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         SizedBox(
-                          width: 10,
+                          height: 5,
+                        ),
+                        Text(
+                          widget.post.text,
+                          //style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),

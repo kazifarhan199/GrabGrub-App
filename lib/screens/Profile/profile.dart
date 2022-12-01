@@ -280,7 +280,7 @@ class _ProfileState extends State<Profile> {
                                         child: Row(
                                           children: [
                                             Icon(Icons.camera_alt_outlined),
-                                            Text(" Camery")
+                                            Text(" Camera")
                                           ],
                                         ),
                                       ),

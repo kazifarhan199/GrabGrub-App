@@ -1,6 +1,7 @@
 import 'package:grab_grub_app/models/utils.dart/sendRequest.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PostModel {
   String title;
@@ -14,6 +15,7 @@ class PostModel {
   int id;
   String date;
   bool liked;
+  int servings;
 
   PostModel({
     required this.title,
@@ -27,6 +29,7 @@ class PostModel {
     required this.userid,
     required this.date,
     required this.liked,
+    required this.servings,
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
@@ -45,6 +48,7 @@ class PostModel {
       date: json['date'],
       title: json['title'],
       liked: json['has_liked'],
+      servings: json['servings'],
     );
   }
 
@@ -165,5 +169,58 @@ class PostModel {
     }
 
     return true;
+  }
+
+  static CreatePost(
+      {required String title,
+      required String description,
+      required XFile? image,
+      required int servings}) async {
+    if (title == '') {
+      throw "Please enter a title";
+    }
+    if (description == '') {
+      throw "Please enter a description";
+    }
+    if (image == null) {
+      throw "Please select an image";
+    }
+    if (servings <= 0) {
+      throw "Please enter the number of servings";
+    }
+
+    Iterable<MultipartFile> files = [];
+    Map<String, String> body = {};
+    Map<String, dynamic> data = {};
+    String url = '/posts/create/';
+    int expectedStatusCode = 201;
+
+    body['title'] = title;
+    body['text'] = description;
+    body['servings'] = servings.toString();
+
+    files = [
+      (await MultipartFile.fromPath(
+        'image',
+        image.path,
+      ))
+    ];
+
+    try {
+      data = await sendRequest(
+        url: url,
+        files: files,
+        body: body,
+        expectedStatusCode: expectedStatusCode,
+        needHeader: true,
+        Method: "POST",
+      );
+    } catch (e) {
+      e as Map;
+      if (e[e.keys.toList().first][0] == 'This field is required.') {
+        throw "${e.keys.toList().first} is required.";
+      }
+      throw e[e.keys.toList().first][0];
+    }
   }
 }
