@@ -147,4 +147,28 @@ class MessageModel {
 
     return message;
   }
+
+  delete() async {
+    Iterable<MultipartFile> files = [];
+    Map<String, String> body = {};
+    String url = '/message/delete/${this.id}/';
+    Map<String, dynamic> data = {};
+    int expectedStatusCode = 204;
+    String method = 'DELETE';
+
+    try {
+      data = await sendRequest(
+        url: url,
+        files: files,
+        body: body,
+        expectedStatusCode: expectedStatusCode,
+        needHeader: true,
+        Method: "DELETE",
+      );
+    } catch (e) {
+      e as Map;
+      throw e[e.keys.toList().first][0];
+    }
+    return true;
+  }
 }
