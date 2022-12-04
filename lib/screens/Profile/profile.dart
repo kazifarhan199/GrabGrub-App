@@ -131,6 +131,11 @@ class _ProfileState extends State<Profile> {
     });
   }
 
+  logoutMethod() {
+    widget.user.logout();
+    Routing.wrapperPage(context);
+  }
+
   showAlertDialog(BuildContext context,
       {required String title, required String content}) {
     // set up the button
@@ -233,12 +238,7 @@ class _ProfileState extends State<Profile> {
         actions: [
           widget.user.id != box.get("id")
               ? Container()
-              : IconButton(
-                  onPressed: () {
-                    widget.user.logout();
-                    Routing.wrapperPage(context);
-                  },
-                  icon: Icon(Icons.logout))
+              : IconButton(onPressed: logoutMethod, icon: Icon(Icons.logout))
         ],
       ),
       body: loading

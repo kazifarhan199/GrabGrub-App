@@ -186,160 +186,37 @@ class _MessageState extends State<Message> {
                     itemCount: messages.length,
                     reverse: true,
                     itemBuilder: (context, index) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          messages[index].post == null
-                              ? Container()
-                              : messages[index].post == 0
-                                  ? Container()
-                                  : Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        mainAxisAlignment: user.username ==
-                                                messages[index].senderUsername
-                                            ? MainAxisAlignment.end
-                                            : MainAxisAlignment.start,
-                                        children: [
-                                          InkWell(
-                                            onTap: () => gotoPostMethod(
-                                                messages[index].post),
-                                            child: Card(
-                                              color: Colors.grey,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    SizedBox(
-                                                      height:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              3,
-                                                      child: CachedNetworkImage(
-                                                        imageUrl:
-                                                            messages[index]
-                                                                .postImage,
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            1.5,
-                                                        placeholder: (context,
-                                                                url) =>
-                                                            Center(
-                                                                child:
-                                                                    CircularProgressIndicator()),
-                                                        errorWidget: (context,
-                                                                url, error) =>
-                                                            Icon(Icons.error),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              1.7,
-                                                      child: Text(
-                                                          messages[index]
-                                                              .postText),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                          messages[index].image == ""
-                              ? Container()
-                              : Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment: user.username ==
-                                            messages[index].senderUsername
-                                        ? MainAxisAlignment.end
-                                        : MainAxisAlignment.start,
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          showImageViewer(
-                                              context,
-                                              NetworkImage(
-                                                messages[index].image,
-                                              ),
-                                              backgroundColor: Color.fromARGB(
-                                                  248, 239, 239, 239),
-                                              closeButtonColor: Colors.grey,
-                                              swipeDismissible: true);
-                                        },
-                                        child: Card(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: SizedBox(
-                                              height: 100,
-                                              child: CachedNetworkImage(
-                                                imageUrl: messages[index].image,
-                                                height: 100,
-                                                placeholder: (context, url) =>
-                                                    Center(
-                                                        child:
-                                                            CircularProgressIndicator()),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        Icon(Icons.error),
-                                                // loadingBuilder: (context, i, j) {
-                                                //   return CircularProgressIndicator();
-                                                // },
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                          messages[index].text == ""
-                              ? Container()
-                              : Row(
-                                  mainAxisAlignment: user.username ==
-                                          messages[index].senderUsername
-                                      ? MainAxisAlignment.end
-                                      : MainAxisAlignment.start,
-                                  children: [
-                                    Flexible(
-                                      child: ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                            maxWidth: MediaQuery.of(context)
-                                                    .size
-                                                    .width -
-                                                40),
-                                        child: Card(
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 6),
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  messages[index].text,
-                                                  style:
-                                                      TextStyle(fontSize: 17),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                        ],
-                      );
+                      return messages[index].senderUsername == user.username
+                          ? Dismissible(
+                              key: Key(messages[index].id.toString()),
+                              onDismissed: (direction) async {
+                                // Remove the item from the data source.
+                                try {
+                                  messages[index].delete();
+                                  setState(() {
+                                    messages.removeAt(index);
+                                  });
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text(e.toString()),
+                                  ));
+                                }
+
+                                // Then show a snackbar.
+                              },
+                              background: Container(color: Colors.red),
+                              child: MessageCard(
+                                  messages: messages,
+                                  index: index,
+                                  gotoPostMethod: gotoPostMethod),
+                            )
+                          : Container(
+                              child: MessageCard(
+                                  messages: messages,
+                                  index: index,
+                                  gotoPostMethod: gotoPostMethod),
+                            );
                     },
                   ),
                 ),
@@ -426,6 +303,165 @@ class _MessageState extends State<Message> {
                 ),
               ],
             ),
+    );
+  }
+}
+
+class MessageCard extends StatefulWidget {
+  List<MessageModel> messages;
+  int index;
+  Function gotoPostMethod;
+  MessageCard(
+      {required this.messages,
+      required this.index,
+      required this.gotoPostMethod,
+      super.key});
+
+  @override
+  State<MessageCard> createState() => _MessageCardState();
+}
+
+class _MessageCardState extends State<MessageCard> {
+  UserModel user = UserModel.fromHive();
+  List<MessageModel> messages = [];
+  int index = 1;
+
+  @override
+  void initState() {
+    messages = widget.messages;
+    index = widget.index;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        messages[index].post == null
+            ? Container()
+            : messages[index].post == 0
+                ? Container()
+                : Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment:
+                          user.username == messages[index].senderUsername
+                              ? MainAxisAlignment.end
+                              : MainAxisAlignment.start,
+                      children: [
+                        InkWell(
+                          onTap: () =>
+                              widget.gotoPostMethod(messages[index].post),
+                          child: Card(
+                            color: Colors.grey,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height:
+                                        MediaQuery.of(context).size.width / 3,
+                                    child: CachedNetworkImage(
+                                      imageUrl: messages[index].postImage,
+                                      height:
+                                          MediaQuery.of(context).size.width /
+                                              1.5,
+                                      placeholder: (context, url) => Center(
+                                          child: CircularProgressIndicator()),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width / 1.7,
+                                    child: Text(messages[index].postText),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+        messages[index].image == ""
+            ? Container()
+            : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment:
+                      user.username == messages[index].senderUsername
+                          ? MainAxisAlignment.end
+                          : MainAxisAlignment.start,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        showImageViewer(
+                            context,
+                            NetworkImage(
+                              messages[index].image,
+                            ),
+                            backgroundColor: Color.fromARGB(248, 239, 239, 239),
+                            closeButtonColor: Colors.grey,
+                            swipeDismissible: true);
+                      },
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SizedBox(
+                            height: 100,
+                            child: CachedNetworkImage(
+                              imageUrl: messages[index].image,
+                              height: 100,
+                              placeholder: (context, url) =>
+                                  Center(child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                              // loadingBuilder: (context, i, j) {
+                              //   return CircularProgressIndicator();
+                              // },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+        messages[index].text == ""
+            ? Container()
+            : Row(
+                mainAxisAlignment:
+                    user.username == messages[index].senderUsername
+                        ? MainAxisAlignment.end
+                        : MainAxisAlignment.start,
+                children: [
+                  Flexible(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width - 40),
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 6),
+                          child: Column(
+                            children: [
+                              Text(
+                                messages[index].text,
+                                style: TextStyle(fontSize: 17),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+      ],
     );
   }
 }
