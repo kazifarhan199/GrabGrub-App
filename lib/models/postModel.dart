@@ -194,10 +194,12 @@ class PostModel {
     Map<String, dynamic> data = {};
     String url = '/posts/create/';
     int expectedStatusCode = 201;
+    var box = Hive.box('userBox');
 
     body['title'] = title;
     body['text'] = description;
     body['servings'] = servings.toString();
+    body['user'] = box.get("id").toString();
 
     files = [
       (await MultipartFile.fromPath(
