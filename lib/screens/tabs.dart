@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:grab_grub_app/models/userModel.dart';
 import 'package:grab_grub_app/screens/Message/conversation.dart';
 import 'package:grab_grub_app/screens/Profile/profile.dart';
+import 'package:grab_grub_app/screens/claim_history.dart';
 
 import 'home.dart';
 
@@ -21,7 +22,7 @@ class _TabsState extends State<Tabs> with TickerProviderStateMixin {
     super.initState();
     controller = TabController(
       initialIndex: 0,
-      length: 3,
+      length: 4,
       vsync: this,
     );
   }
@@ -43,10 +44,10 @@ class _TabsState extends State<Tabs> with TickerProviderStateMixin {
             Tab(
               icon: Icon(Icons.message),
             ),
-            Tab(icon: Icon(Icons.person)),
             Tab(
               icon: Icon(Icons.query_builder),
             ),
+            Tab(icon: Icon(Icons.person)),
           ],
         ),
       ),
@@ -55,6 +56,7 @@ class _TabsState extends State<Tabs> with TickerProviderStateMixin {
         children: [
           Home(),
           Conversation(),
+          ClaimHistory(),
           Profile(user: UserModel.fromHive(), controller: controller),
         ],
       ),
