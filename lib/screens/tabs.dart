@@ -43,6 +43,9 @@ class _TabsState extends State<Tabs> with TickerProviderStateMixin {
             Tab(
               icon: Icon(Icons.message),
             ),
+            Tab(
+              icon: Icon(Icons.query_builder),
+            ),
             Tab(icon: Icon(Icons.person)),
           ],
         ),
