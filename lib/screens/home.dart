@@ -88,7 +88,10 @@ class _HomeState extends State<Home> {
                             }),
               ),
         floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
+          child: Icon(
+            Icons.add,
+            color: Colors.grey,
+          ),
           onPressed: () => Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => PostCreate())),
         ));

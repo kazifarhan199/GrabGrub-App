@@ -57,9 +57,9 @@ class MyThemes {
           MaterialStateProperty.all<Color>(Color.fromARGB(255, 210, 210, 210)),
     )),
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: Colors.grey[400],
-        focusColor: Colors.grey[700],
-        splashColor: Colors.grey),
+        backgroundColor: Colors.white,
+        focusColor: Colors.white,
+        splashColor: Colors.white),
     appBarTheme: AppBarTheme(
         backgroundColor: Colors.white,
         elevation: 0,
