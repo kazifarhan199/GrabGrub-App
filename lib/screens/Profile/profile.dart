@@ -131,9 +131,43 @@ class _ProfileState extends State<Profile> {
     });
   }
 
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Logout'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Are you sure you want to logout?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                widget.user.logout();
+                Routing.wrapperPage(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   logoutMethod() {
-    widget.user.logout();
-    Routing.wrapperPage(context);
+    _showMyDialog();
   }
 
   showAlertDialog(BuildContext context,
