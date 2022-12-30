@@ -1,16 +1,27 @@
-# grab_grub_app
+# Grab Grub APP
 
-A new Flutter project.
+Is the front end (app) for the Grabgrub project.
+
+University-organized events end up with humongous food wastage. GrabGrub can help reduce wastage by distributing this food among students. GrabGrub helps you reach a potentially larger student group, willing to accept the food, through the application’s posting feature. With our application, you can spend less time trying to manage the food and focus on the event.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Step 1: Run GrubGrab API on port 8000
 
-A few resources to get you started if this is your first Flutter project:
+Step 2: Install dependencies `flutter pub get`
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Step 3: Run App `flutter run`
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## About project
+
+This project was developed as part of the UX designe corse at University of Minnesota - Duluth in fall 2022, by Farhanuddin Kazi(Me) and Mamatha Putta.
+
+Demo: https://youtu.be/LVS2Sm8lPCQ
+
+## Poster
+
+![Figure-1](assets/GrabGrup%20Poster.png)
+
+## Techinical details
+
+We developed the app using flutter the backend is in another repository [https://github.com/kazifarhan199/GrabGrub-API](https://github.com/kazifarhan199/GrabGrub-API) and it is writen in django-rest-framework.
